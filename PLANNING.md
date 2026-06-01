@@ -1,5 +1,4 @@
 # FEATURES
 
-
-
 # TODO
+Generalize stopwords

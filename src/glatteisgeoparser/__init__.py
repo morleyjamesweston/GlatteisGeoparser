@@ -19,6 +19,24 @@ class GlatteisGeoparser:
         gdf: GeoDataFrame,
         configs: GazetteerConfigs,
     ) -> None:
+        """
+        Add a gazetteer to the geoparser.
+
+        Arguments:
+        gdf: GeoDataFrame containing the gazetteer data
+        configs: GazetteerConfigs object containing information about the gazetteer
+
+        Example usage:
+        configs = GazetteerConfigs(
+            name="my_gazetteer",
+            index_col="id",
+            names_col="name",
+            admin_rank=1,
+            population_column="population",
+            is_contextual=False,
+        )
+        geoparser.add_gazetteer(gdf, configs)
+        """
         self.geodata.add_gazetteer(gdf, configs)
 
 
