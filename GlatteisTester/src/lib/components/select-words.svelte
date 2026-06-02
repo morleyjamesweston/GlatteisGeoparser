@@ -56,8 +56,7 @@
 </div>
 
 {#snippet selectableWord(word: string, idx: number)}
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div
+	<button
 		onmouseenter={() => {
 			currentHovered = idx;
 		}}
@@ -81,7 +80,7 @@
 		{isInSelectedRanges(idx, idx) ? 'selected' : ''}"
 	>
 		{word}
-	</div>
+	</button>
 {/snippet}
 
 <style lang="scss">
@@ -105,8 +104,6 @@
 
 	.select-container {
 		display: flex;
-		/* row-gap: 0.5rem; */
-		/* column-gap: 0.2rem; */
 		flex-wrap: wrap;
 	}
 </style>

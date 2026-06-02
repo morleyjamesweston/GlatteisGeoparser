@@ -2,7 +2,6 @@
 	import LocationMap from '$lib/components/location-map.svelte';
 	import SelectWords from '$lib/components/select-words.svelte';
 	import { onMount } from 'svelte';
-	// import ScrollContainer from '$lib/primitives/scroll-container.svelte';
 
 	let content: string | null = $state(null);
 
@@ -26,15 +25,13 @@
 	let selected = $state([]);
 </script>
 
+<h2>Content</h2>
+<SelectWords {content} bind:selected />
+<h2>Choices</h2>
+{selected}
 <h2>Locations</h2>
 <LocationMap />
-
-<h2>Content</h2>
-<SelectWords {content} {selected} />
-<!-- </ScrollContainer> -->
-<h2>Choices</h2>
-
-<button onclick={fetch_next}>Fetch Next</button>
+<button onclick={fetch_next}>Submit</button>
 
 <style lang="scss">
 	:global(.scroll-container) {

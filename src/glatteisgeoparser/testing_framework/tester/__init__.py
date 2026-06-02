@@ -14,6 +14,12 @@ def create_tester_app(
     print("Testing data received in create_tester_app:")
     print(testing_data.head())
 
+    print("Geodata received in create_tester_app:")
+    if geodata is not None:
+        print(geodata.head())
+    else:
+        print("No geodata provided.")
+
     # Get the path to the tester module's directory
     tester_module_path = os.path.dirname(os.path.abspath(__file__))
     static_folder = os.path.join(tester_module_path, "static")
@@ -33,6 +39,13 @@ def create_tester_app(
     def next_content():
         random_row = testing_data.sample(n=1)
         return jsonify(random_row.to_dict(orient="records")[0])
+
+    @app.route("/api/get_geodata", methods=["GET"])
+    def get_geodata():
+        if geodata is not None:
+            return jsonify(geodata.to_json())
+        else:
+            return jsonify([])
 
     # --------------------
     # SERVE WEBSITE

@@ -71,10 +71,10 @@ class GlatteisGeoparser:
             candidates = self.resolver(text, candidates)
             return candidates
 
-    def create_testing_app(
-        self, testing_data: pd.DataFrame, geodata: gpd.GeoDataFrame | None = None
-    ):
-        return create_tester_app(testing_data=testing_data)
+    def create_testing_app(self, testing_data: pd.DataFrame):
+        return create_tester_app(
+            testing_data=testing_data, geodata=self.geodata.combined_gazetteer
+        )
 
 
 __all__ = ["GlatteisGeoparser"]
