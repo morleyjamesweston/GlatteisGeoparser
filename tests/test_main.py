@@ -214,5 +214,4 @@ Legende: Club-Kenner und -betreiber sind sich einig: Ganz verschwinden werden Cl
 Weniger zuversichtlich ist Dušan Nedeljković vom Terminus. Die Schweizer Club-Szene stehe weiterhin vor schwierigen Zeiten. «Es wird sich auf die Grossstädte konzentrieren.» Doch auch er ist überzeugt: Ganz verschwinden werden Clubs nicht. «Tanzen ist ein urmenschliches Bedürfnis.»
 """
 
-    result = geoparser.parse(text)
-    print(result)
+    geoparser.parse(text)
