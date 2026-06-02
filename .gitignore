@@ -20,3 +20,4 @@ tests/test_data/
 
 # temp before final version
 /src/glatteisgeoparser/testing_framework/tester/static
+test_apis/test_data/

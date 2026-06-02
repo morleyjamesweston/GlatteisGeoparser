@@ -1,0 +1,12 @@
+opencollection: 1.0.0
+info:
+  name: "Glatteis_api_testing"
+  type: workspace
+
+collections:
+  - name: "Glatteis_APIs"
+    path: "collections/Glatteis_APIs"
+
+specs:
+
+docs: ''
