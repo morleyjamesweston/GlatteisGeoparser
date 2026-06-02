@@ -10,6 +10,13 @@ wheels/
 # Virtual environments
 .venv
 glattlibs/.github/
-tests/test_data/
 .python-version
 GlatteisTester/.vscode/
+
+
+# lots of shapefiles
+# TODO: include install script
+tests/test_data/
+
+# temp before final version
+/src/glatteisgeoparser/testing_framework/tester/static
