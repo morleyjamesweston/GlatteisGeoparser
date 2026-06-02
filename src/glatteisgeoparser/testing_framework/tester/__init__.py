@@ -1,11 +1,14 @@
 import os
 
+import geopandas as gpd
 import pandas as pd
 from flask import Flask, jsonify, send_from_directory
-from flask_cors import CORS  # ty:ignore[unresolved-import]
+from flask_cors import CORS
 
 
-def create_tester_app(testing_data: pd.DataFrame):
+def create_tester_app(
+    testing_data: pd.DataFrame, geodata: gpd.GeoDataFrame | None = None
+):
     """Create and configure the testing framework Flask app."""
 
     print("Testing data received in create_tester_app:")
@@ -35,7 +38,7 @@ def create_tester_app(testing_data: pd.DataFrame):
     # SERVE WEBSITE
     # --------------------
     # prioritize static file routes before the catch-all route
-    @app.route("/")
+    @app.route("/code")
     def index():
         return send_from_directory(static_folder, "index.html")
 

@@ -18,9 +18,7 @@
 		display: flex;
 		flex-direction: column;
 		max-width: 60rem;
-		height: 100dvh;
 		margin: 0 auto;
-		background-color: red;
 		padding: $spacing-lg;
 	}
 </style>
