@@ -12,3 +12,4 @@ wheels/
 glattlibs/.github/
 tests/test_data/
 .python-version
+GlatteisTester/.vscode/
