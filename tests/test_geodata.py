@@ -1,6 +1,6 @@
 import geopandas as gpd
 import pandas as pd
-import pytest  # ty:ignore[unresolved-import]
+import pytest
 
 from glatteisgeoparser.geodata import GazetteerConfigs, GeoData
 

@@ -22,6 +22,7 @@ class _GazetteerRow(NamedTuple):
     geometry: BaseGeometry
     gazetteer_name: str
     is_contextual: bool
+    has_context: bool
 
 
 class GeoData:
