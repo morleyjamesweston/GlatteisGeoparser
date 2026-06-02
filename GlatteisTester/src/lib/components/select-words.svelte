@@ -29,13 +29,12 @@
 
 	function removeFromSelected() {
 		if (selectStart !== null && selectEnd !== null) {
-			const [start, end] = [selectStart, selectEnd].sort((a, b) => a - b);
 			selected = selected.filter((_, idx) => {
 				const range = selectedRanges[idx];
-				return !(range.start >= start && range.end <= end);
+				return !isInSelectedRanges(range.start, range.end);
 			});
 			selectedRanges = selectedRanges.filter(
-				(range) => !(range.start >= start && range.end <= end)
+				(range) => !isInSelectedRanges(range.start, range.end)
 			);
 		}
 	}
@@ -55,7 +54,6 @@
 		{@render selectableWord(word, idx)}
 	{/each}
 </div>
-{selected}
 
 {#snippet selectableWord(word: string, idx: number)}
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
