@@ -2,6 +2,7 @@ import os
 
 import pandas as pd
 from flask import Flask, jsonify, send_from_directory
+from flask_cors import CORS  # ty:ignore[unresolved-import]
 
 
 def create_tester_app(testing_data: pd.DataFrame):
@@ -19,12 +20,14 @@ def create_tester_app(testing_data: pd.DataFrame):
         "glatteisgeoparser.testing_framework.tester",
     )
 
+    CORS(app)
+
     # --------------------
     # API ENDPOINTS
     # --------------------
     # api endpoint to serve a random line from testing_data
-    @app.route("/api/random_line", methods=["GET"])
-    def random_line():
+    @app.route("/api/next_content", methods=["GET"])
+    def next_content():
         random_row = testing_data.sample(n=1)
         return jsonify(random_row.to_dict(orient="records")[0])
 
