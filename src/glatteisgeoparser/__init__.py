@@ -1,15 +1,31 @@
 from geopandas import GeoDataFrame
 
-from .configs import GazetteerConfigs, GlatteisConfigs, default_configs
+from .configs import (
+    GazetteerConfigs,
+    RecognizerConfigs,
+    default_recognizer_configs,
+    default_resolver_configs,
+)
 from .geodata import GeoData
 from .recognizer import Recognizer
+from .resolver import Resolver
 
 
 class GlatteisGeoparser:
-    def __init__(self, configs: GlatteisConfigs = default_configs) -> None:
+    def __init__(
+        self, recogizer_configs: RecognizerConfigs = default_recognizer_configs
+    ) -> None:
         self.geodata = GeoData()
         self.recognizer = Recognizer(
-            language=configs.language, library=configs.library, model=configs.model
+            language=recogizer_configs.language,
+            library=recogizer_configs.method,
+            model=recogizer_configs.model,
+        )
+
+        self.resolver = Resolver(
+            library=default_resolver_configs.method,
+            language="de",
+            model=None,
         )
         pass
 

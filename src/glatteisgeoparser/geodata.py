@@ -44,7 +44,7 @@ class GeoData:
         self,
         gdf: gpd.GeoDataFrame,
         configs: GazetteerConfigs,
-    ):
+    ) -> None:
         """
         Add a gazetteer to the geoparser.
 
@@ -58,28 +58,32 @@ class GeoData:
             raise ValueError("Index column not in GeoDataFrame")
         if configs.names_col not in gdf.columns:
             raise ValueError("Names column not in GeoDataFrame")
-        if type(configs.admin_rank) is str and configs.admin_rank not in gdf.columns:
+        if (
+            isinstance(configs.admin_rank, str)
+            and configs.admin_rank not in gdf.columns
+        ):
             raise ValueError("Admin rank column not in GeoDataFrame")
         if configs.population_column and configs.population_column not in gdf.columns:
             raise ValueError("Population column not in GeoDataFrame")
-        pass
 
         simplified_gdf = gdf.copy(deep=True)
 
         # removes null name rows
         simplified_gdf = simplified_gdf[simplified_gdf[configs.names_col].notnull()]
-        if type(simplified_gdf) is not gpd.GeoDataFrame:
-            raise ValueError("")
+        if not isinstance(simplified_gdf, gpd.GeoDataFrame):
+            raise ValueError(
+                f"All rows in {configs.names_col} column are null for gazetteer {configs.name}"
+            )
 
         simplified_gdf = simplified_gdf.to_crs("EPSG:4326")
 
         # sets administrative rank to int for whole gazetteer,
         # or sets administrative rank column name
-        if isinstance(configs.admin_rank, str):
-            pass
-        elif isinstance(configs.admin_rank, int):
+        if isinstance(configs.admin_rank, int):
             simplified_gdf["gaz_admin_rank"] = configs.admin_rank
             admin_rank = "gaz_admin_rank"
+        elif isinstance(configs.admin_rank, str):
+            pass
         else:
             raise TypeError("Admin rank must be str or int")
 
@@ -90,6 +94,8 @@ class GeoData:
             configs.population_column = "gaz_population"
         elif isinstance(configs.population_column, str):
             pass
+        else:
+            raise TypeError("Population column must be str or None")
 
         # sets standardized name column
         simplified_gdf["standardized_names"] = [
@@ -108,10 +114,6 @@ class GeoData:
             ]
         ]
 
-        # This is to keep type checker happy
-        simplified_gdf = gpd.GeoDataFrame(simplified_gdf)
-
-        # Inplace to keep typing happy
         simplified_gdf.rename(
             columns={
                 configs.index_col: "original_index",
@@ -141,7 +143,8 @@ class GeoData:
             self.combined_gazetteer["standardized_names"].isin(candidates)
         ]
 
-        if df is None or df.empty or type(df) is not gpd.GeoDataFrame:
+        # if df is None or df.empty or type(df) is not gpd.GeoDataFrame:
+        if df.empty or not isinstance(df, gpd.GeoDataFrame):
             return None
 
         df["has_context"] = False
@@ -160,3 +163,6 @@ class GeoData:
                 df.loc[row_b_cast.Index, "has_context"] = True
 
         return df
+
+
+__all__ = ["GeoData"]

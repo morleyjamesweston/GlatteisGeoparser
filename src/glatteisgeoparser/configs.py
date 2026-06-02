@@ -1,12 +1,34 @@
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional, Union
 
 
 @dataclass
-class GlatteisConfigs:
+class OutputConfigs:
+    output_format: str
+    output_path: Optional[str] = None
+
+
+@dataclass
+class RecognizerConfigs:
     language: str
-    library: str
+    method: str
     model: str
+
+
+default_recognizer_configs = RecognizerConfigs(
+    language="de",
+    method="spacy",
+    model="de_core_news_sm",
+)
+
+
+@dataclass
+class ResolverConfigs:
+    method: str | None
+    model: Optional[str] = None
+
+
+default_resolver_configs = ResolverConfigs(method="statistical")
 
 
 @dataclass
@@ -17,10 +39,3 @@ class GazetteerConfigs:
     admin_rank: Union[str, int]
     population_column: str | None = None
     is_contextual: bool = False
-
-
-default_configs = GlatteisConfigs(
-    language="de",
-    library="spacy",
-    model="de_core_news_sm",
-)
