@@ -1,12 +1,11 @@
 from glatteisgeoparser.geoparser import GlatteisGeoparser
+from glatteisgeoparser.geotester import GlatteisGeoTester
 
 from .configs import GazetteerConfigs, RecognizerConfigs
 
-# from .testing_framework import CrossLanguageTester
-
 __all__ = [
     "GlatteisGeoparser",
+    "GlatteisGeoTester",
     "RecognizerConfigs",
     "GazetteerConfigs",
-    "tester",
 ]

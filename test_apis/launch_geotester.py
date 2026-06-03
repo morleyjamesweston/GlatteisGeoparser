@@ -1,13 +1,13 @@
 import geopandas as gpd
 import pandas as pd
 
-from glatteisgeoparser import GazetteerConfigs, GlatteisGeoparser
+from glatteisgeoparser import GazetteerConfigs, GlatteisGeoparser, GlatteisGeoTester
+from glatteisgeoparser.configs import GeoTesterConfigs
 
 testing_data = pd.read_csv("./test_data/glatteis_sample.csv")
 
 
 gigp = GlatteisGeoparser()
-
 
 ne_countries = gpd.read_file("./test_data/ne_10m_admin_0_countries.zip")
 
@@ -64,5 +64,12 @@ gigp.add_gazetteer(
     configs=configs,
 )
 
-# app = gigp.create_testing_app(testing_data=testing_data)
-# app.run(debug=True)
+
+configs = GeoTesterConfigs(
+    data_path="./",
+)
+
+gt = GlatteisGeoTester(configs=configs, geoparsers=[gigp])
+
+app = gt.create_testing_app(testing_data=testing_data)
+app.run(debug=True)

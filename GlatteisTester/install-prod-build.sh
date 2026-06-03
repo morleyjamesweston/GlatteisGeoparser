@@ -1,2 +1,2 @@
 bun run build
-cp -r build/* ../src/glatteisgeoparser/testing_framework/tester/static/
+cp -r build/* ../src/glatteisgeoparser/geotester/web_app/static/

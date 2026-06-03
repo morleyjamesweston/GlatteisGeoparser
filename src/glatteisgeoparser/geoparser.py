@@ -1,5 +1,4 @@
 import geopandas as gpd
-import pandas as pd
 from geopandas import GeoDataFrame
 
 from .configs import (
@@ -11,7 +10,6 @@ from .configs import (
 from .geodata import GeoData
 from .recognizer import Recognizer
 from .resolver import Resolver
-from .testing_framework import create_tester_app
 
 
 class GlatteisGeoparser:
@@ -68,9 +66,6 @@ class GlatteisGeoparser:
         else:
             candidates = self.resolver(text, candidates)
             return candidates
-
-    def create_testing_app(self, testing_data: pd.DataFrame):
-        return create_tester_app(testing_data=testing_data, geodata=self.geodata)
 
 
 __all__ = ["GlatteisGeoparser"]

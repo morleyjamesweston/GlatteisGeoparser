@@ -3,6 +3,11 @@ from typing import Optional, Union
 
 
 @dataclass
+class GeoTesterConfigs:
+    data_path: str
+
+
+@dataclass
 class OutputConfigs:
     output_format: str
     output_path: Optional[str] = None
