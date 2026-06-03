@@ -2,23 +2,20 @@ import os
 
 import geopandas as gpd
 import pandas as pd
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
+from glatteisgeoparser.geodata import GeoData
 
-def create_tester_app(
-    testing_data: pd.DataFrame, geodata: gpd.GeoDataFrame | None = None
-):
+
+def create_tester_app(testing_data: pd.DataFrame, geodata: GeoData):
     """Create and configure the testing framework Flask app."""
 
     print("Testing data received in create_tester_app:")
     print(testing_data.head())
 
     print("Geodata received in create_tester_app:")
-    if geodata is not None:
-        print(geodata.head())
-    else:
-        print("No geodata provided.")
+    print(geodata.combined_gazetteer.head())
 
     # Get the path to the tester module's directory
     tester_module_path = os.path.dirname(os.path.abspath(__file__))
@@ -34,7 +31,8 @@ def create_tester_app(
     # --------------------
     # API ENDPOINTS
     # --------------------
-    # api endpoint to serve a random line from testing_data
+
+    # serve the next contents
     @app.route("/api/next_content", methods=["GET"])
     def next_content():
         random_row = testing_data.sample(n=1)
@@ -42,10 +40,21 @@ def create_tester_app(
 
     @app.route("/api/get_geodata", methods=["GET"])
     def get_geodata():
-        if geodata is not None:
-            return jsonify(geodata.to_json())
+        return jsonify(geodata.combined_gazetteer.to_json())
+
+    # get potential locations from a location name
+    @app.route("/api/get_location_choices", methods=["GET"])
+    def get_potential_locations():
+        location = request.args.get("location")
+        if location:
+            candidates = geodata.get_candidates([location])
+            if candidates is not None and not candidates.empty:
+                return jsonify(candidates.to_json())
+            else:
+                return jsonify({"message": f"No candidates found for '{location}'"})
+
         else:
-            return jsonify([])
+            return jsonify({"error": "No location parameter provided"})
 
     # --------------------
     # SERVE WEBSITE

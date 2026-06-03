@@ -1,11 +1,21 @@
 <script lang="ts">
+	// import sentencize from '@stdlib/nlp-sentencize';
+
 	let {
 		content,
 		selected = $bindable([]),
 		enabled
 	}: { content: string | null; selected: string[]; enabled: boolean } = $props();
 
-	let splitWords = $derived(content ? content.split(/\s+/).slice(0, 50) : []);
+	let splitWords = $derived(content ? content.split(/\s+/) : []);
+
+	// nested list of split words inside split sentences
+	// let splitContent: string[][] = $derived.by(() => {
+	// 	if (!content) return [];
+	// 	const sentences = sentencize(content);
+	// 	return sentences.map((sentence) => sentence.split(/\s+/));
+	// });
+
 	let selectedRanges: Array<{ start: number; end: number }> = $state([]);
 
 	let currentHovered: number | null = $state(null);
@@ -21,6 +31,11 @@
 	let selectStart: number | null = $state(null);
 	let selectEnd: number | null = $state(null);
 
+	// Normalize words by removing punctuation for comparison
+	function normalizeWord(word: string): string {
+		return word.replace(/[^\w\s]/g, '').toLowerCase();
+	}
+
 	function isInSelectedRanges(start: number, end: number) {
 		return selectedRanges.some(
 			(range) =>
@@ -30,24 +45,103 @@
 		);
 	}
 
+	function rebuildRangesFromSelected() {
+		const newRanges: Array<{ start: number; end: number }> = [];
+
+		selected.forEach((selectedText) => {
+			const trimmedText = selectedText.trim();
+			if (trimmedText.length === 0) return;
+
+			const selectedWords = trimmedText.split(/\s+/);
+			const normalizedSelectedWords = selectedWords.map(normalizeWord);
+
+			// Find all ranges in the document that match this exact phrase
+			for (let i = 0; i <= splitWords.length - selectedWords.length; i++) {
+				let matches = true;
+				for (let j = 0; j < selectedWords.length; j++) {
+					if (normalizeWord(splitWords[i + j]) !== normalizedSelectedWords[j]) {
+						matches = false;
+						break;
+					}
+				}
+
+				if (matches) {
+					const start = i;
+					const end = i + selectedWords.length - 1;
+					if (!newRanges.some((r) => r.start === start && r.end === end)) {
+						newRanges.push({ start, end });
+					}
+				}
+			}
+		});
+
+		selectedRanges = newRanges;
+	}
+
+	$effect(() => {
+		rebuildRangesFromSelected();
+	});
+
 	function removeFromSelected() {
 		if (selectStart !== null && selectEnd !== null) {
-			selected = selected.filter((_, idx) => {
-				const range = selectedRanges[idx];
-				return !isInSelectedRanges(range.start, range.end);
+			const [start, end] = [selectStart, selectEnd].sort((a, b) => a - b);
+
+			// Find which phrase contains this clicked word
+			const phrasesToRemove: string[] = [];
+
+			selected.forEach((phrase) => {
+				const trimmedPhrase = phrase.trim();
+				if (trimmedPhrase.length === 0) return;
+
+				const phraseWords = trimmedPhrase.split(/\s+/);
+				const normalizedPhraseWords = phraseWords.map(normalizeWord);
+
+				// Check if the clicked range overlaps with any instance of this phrase
+				for (let i = 0; i <= splitWords.length - phraseWords.length; i++) {
+					let matches = true;
+					for (let j = 0; j < phraseWords.length; j++) {
+						if (normalizeWord(splitWords[i + j]) !== normalizedPhraseWords[j]) {
+							matches = false;
+							break;
+						}
+					}
+
+					if (matches) {
+						const phraseStart = i;
+						const phraseEnd = i + phraseWords.length - 1;
+
+						// Check if clicked range overlaps with this phrase instance
+						if (
+							(start >= phraseStart && start <= phraseEnd) ||
+							(end >= phraseStart && end <= phraseEnd) ||
+							(start <= phraseStart && end >= phraseEnd)
+						) {
+							if (!phrasesToRemove.includes(phrase)) {
+								phrasesToRemove.push(phrase);
+							}
+							break;
+						}
+					}
+				}
 			});
-			selectedRanges = selectedRanges.filter(
-				(range) => !isInSelectedRanges(range.start, range.end)
-			);
+
+			// Remove the overlapping phrases
+			selected = selected.filter((item) => !phrasesToRemove.includes(item));
 		}
 	}
 
 	function addRangeToSelected() {
 		if (selectStart !== null && selectEnd !== null) {
 			const [start, end] = [selectStart, selectEnd].sort((a, b) => a - b);
-			const selectedWords = splitWords.slice(start, end + 1).join(' ');
-			selected = [...selected, selectedWords];
-			selectedRanges = [...selectedRanges, { start, end }];
+
+			// Get the exact phrase from the selection
+			const wordsInRange = splitWords.slice(start, end + 1);
+			const phrase = wordsInRange.join(' ');
+
+			// Add this phrase to selected
+			if (!selected.includes(phrase)) {
+				selected = [...selected, phrase];
+			}
 		}
 	}
 </script>

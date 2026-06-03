@@ -1,34 +1,39 @@
 <script lang="ts">
+	import Skeleton from '$lib/primitives/skeleton.svelte';
+	import { stripPunctuation } from '$lib/utilities/strip-punctuation';
+
 	let { selected = $bindable() }: { selected: string[] } = $props();
+
+	let uniqueSelected = $derived(
+		selected
+			.map((item) => item.trim())
+			.filter((item) => item.length > 0)
+			.filter((item, index, self) => self.indexOf(item) === index)
+	);
 </script>
 
-<!-- onclick={() => {
-				selected = selected.filter((_, i) => i !== idx);
-			}} -->
 <div class="container">
-	{#each selected as item, idx (`${item}-${idx}`)}
-		<button>
-			{item}
+	{#each uniqueSelected as item, idx (`${item}-${idx}`)}
+		<button
+			onclick={() => {
+				selected = selected.filter((_, i) => i !== idx);
+			}}
+		>
+			{stripPunctuation(item)}
 		</button>
 	{:else}
-		<div class="empty-content">Please all locations in the text.</div>
+		<Skeleton height={6} text="Please identify all locations in the text." />
 	{/each}
 </div>
 
 <style lang="scss">
-	.empty-content {
-		width: 100%;
-		height: 2rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-style: italic;
-	}
 	.container {
 		display: flex;
-		min-height: 2rem;
+		min-height: 6rem;
 		flex-wrap: wrap;
 		gap: $spacing-sm;
+		align-items: start;
+		justify-content: start;
 	}
 	button {
 		border: none;

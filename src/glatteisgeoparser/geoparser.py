@@ -12,7 +12,6 @@ from .geodata import GeoData
 from .recognizer import Recognizer
 from .resolver import Resolver
 from .testing_framework import create_tester_app
-from .utilities import standardize_name
 
 
 class GlatteisGeoparser:
@@ -63,7 +62,6 @@ class GlatteisGeoparser:
             raise Exception("No gazetteers loaded")
 
         candidates = self.recognizer(text)
-        candidates = [standardize_name(c) for c in candidates]
         candidates = self.geodata.get_candidates(candidates)
         if candidates is None:
             return None
@@ -72,9 +70,7 @@ class GlatteisGeoparser:
             return candidates
 
     def create_testing_app(self, testing_data: pd.DataFrame):
-        return create_tester_app(
-            testing_data=testing_data, geodata=self.geodata.combined_gazetteer
-        )
+        return create_tester_app(testing_data=testing_data, geodata=self.geodata)
 
 
 __all__ = ["GlatteisGeoparser"]

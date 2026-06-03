@@ -138,8 +138,7 @@ class GeoData:
         self._add_keywords(simplified_gdf["standardized_names"].tolist())
 
     def get_candidates(self, candidates: List[str]) -> gpd.GeoDataFrame | None:
-        # candidates = [c for c in text if self._candidate_exists(c)]
-
+        candidates = [standardize_name(c) for c in candidates]
         df = self.combined_gazetteer[
             self.combined_gazetteer["standardized_names"].isin(candidates)
         ]

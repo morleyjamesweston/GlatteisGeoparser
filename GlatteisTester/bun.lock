@@ -4,6 +4,8 @@
     "": {
       "name": "glatteistester",
       "dependencies": {
+        "@lucide/svelte": "^1.3.0",
+        "@stdlib/nlp-sentencize": "^0.2.4",
         "bits-ui": "^2.18.1",
         "normalize.css": "^8.0.1",
         "ol": "^10.9.0",
@@ -86,6 +88,8 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
+    "@lucide/svelte": ["@lucide/svelte@1.3.0", "", { "peerDependencies": { "svelte": "^5" } }, "sha512-ZRjfWKklbD9Sjhnb6d7v8A3zSGwVHNTM8kOiObSUIiF4B2rU4zskWV7ysp5tY0wOPl7ttj2bXGQvAd6qOCVhIA=="],
+
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@1.1.4", "", { "dependencies": { "@tybys/wasm-util": "^0.10.1" }, "peerDependencies": { "@emnapi/core": "^1.7.1", "@emnapi/runtime": "^1.7.1" } }, "sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow=="],
 
     "@oxc-project/types": ["@oxc-project/types@0.133.0", "", {}, "sha512-KzkdCd6Uxqnf6l3HOw1xfatAlUURA0g14cvBYFyJ5SaNOQbOUvBr9PKArcPcrNIeRsBdgcUzOGrhKveVpvOIGA=="],
@@ -155,6 +159,44 @@
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.1", "", {}, "sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw=="],
 
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
+
+    "@stdlib/assert-has-own-property": ["@stdlib/assert-has-own-property@0.2.3", "", { "os": "!android" }, "sha512-BnX1Lpvd9YaucQLokQrf7ppLwa3V+nTUQ9qoys5SloYhjwbYWtO61SJVT2JK+cfsCxUAx/HAh3dN1qTKxx1PIg=="],
+
+    "@stdlib/assert-has-symbol-support": ["@stdlib/assert-has-symbol-support@0.2.3", "", { "os": "!android" }, "sha512-yNsJnCb7HWye5xhZ/eRIpp28HwOVFF5gUCKeT1p4haoDJOn+3YEPYaXMn4mYK6kRN96tUhovlJQv9H/9jwnLpA=="],
+
+    "@stdlib/assert-has-tostringtag-support": ["@stdlib/assert-has-tostringtag-support@0.2.3", "", { "dependencies": { "@stdlib/assert-has-symbol-support": "^0.2.3" }, "os": "!android" }, "sha512-9sULfRKYneF/Mq6F96xqeQrf0a9wdJc1lNZf2wfs1EtRwQHQfx5+QlYl7hp3gWI/iid5M4Npme86T0413eaBfA=="],
+
+    "@stdlib/assert-is-boolean": ["@stdlib/assert-is-boolean@0.2.3", "", { "dependencies": { "@stdlib/assert-has-tostringtag-support": "^0.2.3", "@stdlib/boolean-ctor": "^0.2.3", "@stdlib/utils-define-nonenumerable-read-only-property": "^0.2.3", "@stdlib/utils-native-class": "^0.2.2" }, "os": "!android" }, "sha512-36BETlRDrBeCOBLowW1/vqk9wD+OA3Wp9eQxFij/7icKiMDURH+Fiw2hfbhaZ3c3Y9uEN0rAdOT7AJlwWhXc7Q=="],
+
+    "@stdlib/assert-is-string": ["@stdlib/assert-is-string@0.2.3", "", { "dependencies": { "@stdlib/assert-has-tostringtag-support": "^0.2.3", "@stdlib/utils-define-nonenumerable-read-only-property": "^0.2.3", "@stdlib/utils-native-class": "^0.2.2" }, "os": "!android" }, "sha512-KC2sHwnIo775uEPRG7miERHb3DMABf37jS6o2bmcMHyME+gl+HC/bnqgwYTfgOsM0YOvYMSgA1HJo6iPDXdFrw=="],
+
+    "@stdlib/boolean-ctor": ["@stdlib/boolean-ctor@0.2.3", "", { "os": "!android" }, "sha512-JmVu1SdJHYK5ubLl8nqi0gfYX5kAcSRRJYNQ7JuG8oU6WtkIMsC0ahQ8+3G673czRaQ7HGE+pL0IZiH/s8HSrQ=="],
+
+    "@stdlib/error-tools-fmtprodmsg": ["@stdlib/error-tools-fmtprodmsg@0.2.3", "", { "os": "!android" }, "sha512-mt4YRp52oCkNWhxkUIJkeGaFnSvZkyfl4rOJX8Drz99xFiIdanXcSacckhrXXu6NQvMDKidCGr6DvrhHHx15LQ=="],
+
+    "@stdlib/nlp-sentencize": ["@stdlib/nlp-sentencize@0.2.4", "", { "dependencies": { "@stdlib/assert-is-string": "^0.2.3", "@stdlib/nlp-tokenize": "^0.2.2", "@stdlib/string-base-trim": "^0.2.3" }, "os": "!android" }, "sha512-A33obkK83fFsDc0kHOh3UwPbwGZ/3od9xjfFLNkTCw2Pxi9ixep0tyTjfmPTmzFM4Xs9wS4xu0PUK53WvHzLnw=="],
+
+    "@stdlib/nlp-tokenize": ["@stdlib/nlp-tokenize@0.2.3", "", { "dependencies": { "@stdlib/assert-has-own-property": "^0.2.3", "@stdlib/assert-is-boolean": "^0.2.3", "@stdlib/assert-is-string": "^0.2.3", "@stdlib/error-tools-fmtprodmsg": "^0.2.3", "@stdlib/string-format": "^0.2.3" }, "os": "!android" }, "sha512-F/XseSaPPmWeVDHXfv+l2h7CShAEkaldC8qg6oG2bhhuANIsR0rmnkDKSYIV2agTAyl2fxeUpIfIV5tj+w/4eQ=="],
+
+    "@stdlib/string-base-format-interpolate": ["@stdlib/string-base-format-interpolate@0.2.4", "", { "os": "!android" }, "sha512-POG725+DPEmzEJbMFTFPdKM4vA5i+t7juNYs+H2cQz5JXiPV1+5+P3epnO+/DqHWzLhiMlsKDCZq03C3WcBkSA=="],
+
+    "@stdlib/string-base-format-tokenize": ["@stdlib/string-base-format-tokenize@0.2.4", "", { "os": "!android" }, "sha512-qYHSmqFv7vloLFvjBAbZCn5qtxj7M+Qru3VqBooJTxWMcUeZOEBZg18/PFgfUrZhji5MVWDXbRTAx5Bu5M5nQA=="],
+
+    "@stdlib/string-base-replace": ["@stdlib/string-base-replace@0.2.3", "", { "os": "!android" }, "sha512-FJdh2GzIkgMlr0v/ZZKD5cWRs+SMOhBTWxAexmWoYFL3WL1YMDgwI5hRtYh/ySyOy94MjJmYwRMpIVdxeclrAw=="],
+
+    "@stdlib/string-base-trim": ["@stdlib/string-base-trim@0.2.3", "", { "dependencies": { "@stdlib/string-base-replace": "^0.2.2" }, "os": "!android" }, "sha512-Fd2KoPvQfLy2Sk37hB6A+kLKcCcM4LvDS0LEOiO5V455wAwOEDNaQNw+G3T/7V/j9h6UXfY7VUJNXtE4IZddiA=="],
+
+    "@stdlib/string-format": ["@stdlib/string-format@0.2.3", "", { "dependencies": { "@stdlib/string-base-format-interpolate": "^0.2.3", "@stdlib/string-base-format-tokenize": "^0.2.4" }, "os": "!android" }, "sha512-uE0LHUUnWKfxFeipyfb9yWbs+iczz6dHaolSGC1WBzMVyeHqx8xvq+yP3f2POYWgEcknmxNgU21WSqToSNrxdA=="],
+
+    "@stdlib/symbol-ctor": ["@stdlib/symbol-ctor@0.2.3", "", { "os": "!android" }, "sha512-wnuFrxnmhg2p6QQP0B/j97LD5ys2d1bHuwVvh9yuUSCLoX/GankaVyGSufk2ROlsxrcm2HPhSDB/ILBHeUmamA=="],
+
+    "@stdlib/types": ["@stdlib/types@0.4.3", "", { "os": "!android" }, "sha512-9GCqS2eni2VSwa5/CCniAJ4I1eWLtvior1z6hoPJp6VTNMgW9Lh4BiI84IO0xun/0qAclJ+mTGTiCTZxZLK13A=="],
+
+    "@stdlib/utils-define-nonenumerable-read-only-property": ["@stdlib/utils-define-nonenumerable-read-only-property@0.2.3", "", { "dependencies": { "@stdlib/types": "^0.4.3", "@stdlib/utils-define-property": "^0.2.5" }, "os": "!android" }, "sha512-W0rqnRsXgW3GjcwEcOMi0mI/CXn3TVqmFvcxItLUZPJNYmwrU6+t+9kGldhMw845DyOtv8uYASrnNoVE/VfiDw=="],
+
+    "@stdlib/utils-define-property": ["@stdlib/utils-define-property@0.2.5", "", { "dependencies": { "@stdlib/error-tools-fmtprodmsg": "^0.2.2", "@stdlib/string-format": "^0.2.2" }, "os": "!android" }, "sha512-WpbXc2uq8vtSqmWFzVrFifNj6HGoGHIZHolxX5GfRFbj4RNme1u/wtklmiOvcHE0s6SwPX764tuFXIgHBR5Vag=="],
+
+    "@stdlib/utils-native-class": ["@stdlib/utils-native-class@0.2.3", "", { "dependencies": { "@stdlib/assert-has-own-property": "^0.2.2", "@stdlib/assert-has-tostringtag-support": "^0.2.3", "@stdlib/symbol-ctor": "^0.2.3" }, "os": "!android" }, "sha512-UGXCPhgmOjwMpEQ5fFiifcqrhUnP8ICyWzEkHphUrh2/0pHyK0zilZvcODfROgzoy6L9ivUUuR6NjrAI+j14hA=="],
 
     "@sveltejs/acorn-typescript": ["@sveltejs/acorn-typescript@1.0.10", "", { "peerDependencies": { "acorn": "^8.9.0" } }, "sha512-4WfKk68eTih+MiJD4fSbxN7E8kVBmTMPWHUPYjvl2N0rMs53YLTT8/YjKU5Dtnz5LqDjl7LEw4U7lXR2W3J5WA=="],
 
