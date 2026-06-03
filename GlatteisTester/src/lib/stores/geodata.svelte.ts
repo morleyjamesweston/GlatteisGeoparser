@@ -1,5 +1,6 @@
 export class GeoDataStore {
 	geoData = $state(null);
+	dataLoaded = $state(false);
 
 	loadGeoData() {
 		fetch('http://127.0.0.1:5000/api/get_geodata')
@@ -8,6 +9,7 @@ export class GeoDataStore {
 			})
 			.then((data) => {
 				this.geoData = data;
+				this.dataLoaded = true;
 			})
 			.catch((error) => {
 				console.error('Error fetching geodata:', error);

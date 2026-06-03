@@ -1,6 +1,9 @@
 <script lang="ts">
-	let { content, selected = $bindable([]) }: { content: string | null; selected: string[] } =
-		$props();
+	let {
+		content,
+		selected = $bindable([]),
+		enabled
+	}: { content: string | null; selected: string[]; enabled: boolean } = $props();
 
 	let splitWords = $derived(content ? content.split(/\s+/).slice(0, 50) : []);
 	let selectedRanges: Array<{ start: number; end: number }> = $state([]);
@@ -58,12 +61,16 @@
 {#snippet selectableWord(word: string, idx: number)}
 	<button
 		onmouseenter={() => {
+			if (!enabled) return;
 			currentHovered = idx;
 		}}
 		onmousedown={() => {
+			if (!enabled) return;
+
 			selectStart = idx;
 		}}
 		onmouseup={() => {
+			if (!enabled) return;
 			selectEnd = idx;
 			const isInSelected = isInSelectedRanges(selectStart!, selectEnd);
 			if (isInSelected) {

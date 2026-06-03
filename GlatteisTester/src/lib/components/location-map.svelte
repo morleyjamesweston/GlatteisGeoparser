@@ -1,4 +1,5 @@
 <script lang="ts">
+	import 'ol/ol.css';
 	import Map from 'ol/Map';
 	import View from 'ol/View';
 	import OSM from 'ol/source/OSM.js';
@@ -15,34 +16,10 @@
 	// import { easeOut } from 'ol/easing.js';
 	// import { Feature } from 'ol';
 
-	// let mapId = ;
 	let map: Map | null = null;
 
 	let DEFAULT_CENTER = [965919.0, 6012370.0];
 	let DEFAULT_ZOOM = 10.5;
-
-	function addLayerFromGeodataStore() {
-		const geoData = geoDataStore.geoData;
-		if (map && geoData) {
-			const vectorSource = new VectorSource({
-				features: new GeoJSON().readFeatures(geoData)
-			});
-			const style = new Style({
-				fill: new Fill({
-					color: 'rgba(255, 0, 0, 0.5)'
-				}),
-				stroke: new Stroke({
-					color: 'red',
-					width: 2
-				})
-			});
-			const vectorLayer = new VectorLayer({
-				source: vectorSource,
-				style: style
-			});
-			map.addLayer(vectorLayer);
-		}
-	}
 
 	const setupMap = (node: HTMLElement) => {
 		map = new Map({
@@ -66,22 +43,43 @@
 			}
 		};
 	};
+
+	function addLayerFromGeodataStore() {
+		const geoData = geoDataStore.geoData;
+		if (map && geoData) {
+			const vectorSource = new VectorSource({
+				features: new GeoJSON().readFeatures(geoData, {
+					featureProjection: 'EPSG:3857' // Web Mercator projection (what OSM uses)
+				})
+			});
+			const style = new Style({
+				fill: new Fill({
+					color: 'rgba(255, 0, 0, 0.5)'
+				}),
+				stroke: new Stroke({
+					color: 'red',
+					width: 2
+				})
+			});
+			const vectorLayer = new VectorLayer({
+				source: vectorSource,
+				style: style
+			});
+			map.addLayer(vectorLayer);
+			console.log('Layer added successfully with', vectorSource.getFeatures().length, 'features');
+		} else {
+			console.warn('Map or geoData not available', { map: !!map, geoData: !!geoData });
+		}
+	}
+
+	$effect(() => {
+		if (geoDataStore.dataLoaded) {
+			addLayerFromGeodataStore();
+		}
+	});
 </script>
 
 <div id="mainMap" use:setupMap></div>
-
-<button
-	onclick={() => {
-		geoDataStore.loadGeoData();
-	}}
->
-	Load Data
-</button>
-{geoDataStore.geoData ? 'loaded' : 'not loaded'}
-<button onclick={addLayerFromGeodataStore}>Add Geodata Layer</button>
-
-<!-- GeoData: -->
-<!-- {JSON.stringify(geoDataStore.geoData)} -->
 
 <style lang="scss">
 	#mainMap {
