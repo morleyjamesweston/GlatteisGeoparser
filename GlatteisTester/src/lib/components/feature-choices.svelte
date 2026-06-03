@@ -11,6 +11,7 @@
 		value: string;
 		hovered: string | null;
 	} = $props();
+	void hovered;
 	import CheckCircleIcon from '@lucide/svelte/icons/circle-check-big';
 	import CircleIcon from '@lucide/svelte/icons/circle';
 	import { RadioGroup } from 'bits-ui';
