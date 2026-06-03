@@ -1,6 +1,6 @@
 import os
+from pprint import pprint
 
-import geopandas as gpd
 import pandas as pd
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
@@ -56,13 +56,21 @@ def create_tester_app(testing_data: pd.DataFrame, geodata: GeoData):
         else:
             return jsonify({"error": "No location parameter provided"})
 
+    @app.route("/api/submit", methods=["POST"])
+    def submit():
+        data = request.get_json()
+        print("Received submission:")
+        pprint(data)
+        return jsonify({"message": "Submission received successfully"})
+
     # --------------------
     # SERVE WEBSITE
     # --------------------
     # prioritize static file routes before the catch-all route
     @app.route("/code")
     def index():
-        return send_from_directory(static_folder, "index.html")
+        print("Serving index.html for /code route")
+        return send_from_directory(static_folder, "code.html")
 
     @app.route("/<path:filepath>")
     def serve_static(filepath):

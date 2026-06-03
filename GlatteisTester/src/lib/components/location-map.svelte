@@ -16,13 +16,16 @@
 	import { stripPunctuation } from '$lib/utilities/strip-punctuation';
 	import FeatureChoices from './feature-choices.svelte';
 
-	let { location } = $props();
+	let {
+		location,
+		selectedFeature = $bindable('')
+	}: { location: string; selectedFeature?: string } = $props();
 	let map: Map | null = null;
 	let vectorLayer: VectorLayer<VectorSource> | null = null;
 	let geodata: GeoData | null = $state(null);
 	let features: Array<GeoDataFeature> = $state([]);
 	let hoveredFeature = $state<string | null>(null);
-	let selectedFeature = $state<string>('');
+	// let selectedFeature = $state<string>('');
 
 	const defaultStyle = new Style({
 		fill: new Fill({
@@ -120,6 +123,21 @@
 					}
 				}
 
+				console.log('Parsed location choices data:', data);
+
+				// 				Parsed location choices data:
+				// Object { message: "No candidates found for 'Freiberg'" }
+				//
+				// if this is found, automatically make "none_found" the selected choice and skip the map interaction step
+
+				if (data && typeof data === 'object' && 'message' in data) {
+					if (typeof data.message === 'string' && data.message.includes('No candidates found')) {
+						selectedFeature = 'none_found';
+						hoveredFeature = 'none_found';
+						return;
+					}
+				}
+
 				if (data && typeof data === 'object' && 'features' in data) {
 					if (Array.isArray(data.features)) {
 						geodata = data as GeoData;
@@ -202,7 +220,7 @@
 
 	$effect(() => {
 		if (location) {
-			fetch_location_choices(stripPunctuation('luzern'));
+			fetch_location_choices(stripPunctuation(location));
 		}
 	});
 
