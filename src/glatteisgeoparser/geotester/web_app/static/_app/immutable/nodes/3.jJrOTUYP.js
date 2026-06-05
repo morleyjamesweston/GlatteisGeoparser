@@ -1,0 +1,1 @@
+import{n as e}from"../chunks/QTnfLwEv.js";import{t}from"../chunks/gaw8GWTo.js";var n=e({load:()=>r}),r=async({fetch:e})=>{try{(await e(`http://127.0.0.1:5000/auth/logout`,{method:`GET`,credentials:`include`})).ok||console.error(`Logout failed`),t(302,`/auth/login`)}catch(e){console.error(`Logout error:`,e),t(302,`/auth/login`)}};export{n as universal};
