@@ -4,7 +4,7 @@ from typing import Optional, Union
 
 @dataclass
 class GeoTesterConfigs:
-    data_path: str
+    data_path: str = "./"
 
 
 @dataclass

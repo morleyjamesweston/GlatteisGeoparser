@@ -65,11 +65,17 @@ gigp.add_gazetteer(
 )
 
 
+configs = gigp.configs_to_json()
+# print(configs)
+
+# print(gigp.label)
+# exit()
+
 configs = GeoTesterConfigs(
     data_path="./",
 )
 
 gt = GlatteisGeoTester(configs=configs, geoparsers=[gigp])
 
-app = gt.create_testing_app(testing_data=testing_data)
+app = gt.initialize_web_app(testing_data=testing_data)
 app.run(debug=True)

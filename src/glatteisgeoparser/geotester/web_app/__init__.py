@@ -1,22 +1,36 @@
 import os
 from pprint import pprint
 
+import flask_login
 import pandas as pd
-from flask import Flask, jsonify, request, send_from_directory
+from flask import (
+    Flask,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    url_for,
+)
 from flask_cors import CORS
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from glatteisgeoparser.geodata import GeoData
 
+users = {"foo@bar.tld": {"password": "secret"}}
 
-def create_tester_app(testing_data: pd.DataFrame, geodata: GeoData):
+
+def initialize_web_app(testing_data: pd.DataFrame, geodata: GeoData):
     """Create and configure the testing framework Flask app."""
-
-    print("Testing data received in create_tester_app:")
-    print(testing_data.head())
-
-    print("Geodata received in create_tester_app:")
-    print(geodata.combined_gazetteer.head())
-
     # Get the path to the tester module's directory
     tester_module_path = os.path.dirname(os.path.abspath(__file__))
     static_folder = os.path.join(tester_module_path, "static")
@@ -26,12 +40,107 @@ def create_tester_app(testing_data: pd.DataFrame, geodata: GeoData):
         "glatteisgeoparser.testing_framework.tester",
     )
 
+    # Initialize Flask app
+    # app = Flask(__name__)
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SECRET_KEY"] = "supersecretkey"
+
+    # Initialize database and login manager
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = "login"
+    db = SQLAlchemy(app)
+
+    # User model
+    class Users(UserMixin, db.Model):
+        id = db.Column(db.Integer, primary_key=True)
+        username = db.Column(db.String(250), unique=True, nullable=False)
+        password = db.Column(db.String(250), nullable=False)
+
+    # Create database
+    with app.app_context():
+        db.create_all()
+
+    # Load user for Flask-Login
+    @login_manager.user_loader
+    def load_user(user_id):
+        return Users.query.get(int(user_id))
+
+    # Register route
+    @app.route("/auth/register", methods=["GET", "POST"])
+    def register():
+        if request.method == "POST":
+            username = request.form.get("username")
+            password = request.form.get("password")
+
+            if Users.query.filter_by(username=username).first():
+                return render_template("register.html", error="Username already taken!")
+
+            if password:
+                hashed_password = generate_password_hash(
+                    password, method="pbkdf2:sha256"
+                )
+            else:
+                return render_template(
+                    "register.html", error="Password cannot be empty!"
+                )
+
+            new_user = Users(username=username, password=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
+
+            return redirect(url_for("login"))
+
+        return render_template("register.html")
+
+    # Login route
+    @app.route("/auth/login", methods=["GET", "POST"])
+    def login():
+        if request.method == "POST":
+            username = request.form.get("username")
+            password = request.form.get("password")
+
+            user = Users.query.filter_by(username=username).first()
+
+            if user and password and check_password_hash(user.password, password):
+                login_user(user)
+                return redirect(url_for("dashboard"))
+            else:
+                print(f"Login failed for username: {username}")
+                print(
+                    f"User found: {user is not None}, Password provided: {password is not None}"
+                )
+                # return send_from_directory(static_folder, "auth/login.html")
+                # return render_template(
+                #     "login.html", error="Invalid username or password"
+                # )
+
+        return send_from_directory(static_folder, "auth/login.html")
+
+        # return render_template("login.html")
+
+    # Protected dashboard route
+    @app.route("/dashboard")
+    @login_required
+    def dashboard():
+        return render_template("dashboard.html", username=current_user.username)
+
+    # Logout route
+    @app.route("/auth/logout")
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for("login"))
+
+    if __name__ == "__main__":
+        app.run(debug=True)
+
     CORS(app)
 
     # --------------------
     # API ENDPOINTS
     # --------------------
-
     # serve the next contents
     @app.route("/api/next_content", methods=["GET"])
     def next_content():

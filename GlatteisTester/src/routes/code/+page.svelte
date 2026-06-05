@@ -36,8 +36,7 @@
 			.then((response) => response.json())
 			.then((data) => {
 				content = removeHtmlContent(data.content);
-
-				content = 'Lausanne Genf Bern Freiberg Zürich';
+				// content = 'Lausanne Genf Bern Freiberg Zürich';
 				articleID = data.id;
 			})
 			.catch((error) => {
