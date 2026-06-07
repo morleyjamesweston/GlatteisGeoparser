@@ -16,6 +16,9 @@
       "devDependencies": {
         "@eslint/compat": "^2.0.4",
         "@eslint/js": "^10.0.1",
+        "@fontsource-variable/geologica": "^5.2.8",
+        "@fontsource/source-sans-pro": "^5.2.5",
+        "@fontsource/source-serif-pro": "^5.2.5",
         "@sveltejs/adapter-auto": "^7.0.1",
         "@sveltejs/adapter-static": "^3.0.10",
         "@sveltejs/kit": "^2.57.0",
@@ -76,6 +79,12 @@
     "@floating-ui/dom": ["@floating-ui/dom@1.7.6", "", { "dependencies": { "@floating-ui/core": "^1.7.5", "@floating-ui/utils": "^0.2.11" } }, "sha512-9gZSAI5XM36880PPMm//9dfiEngYoC6Am2izES1FF406YFsjvyBMmeJ2g4SAju3xWwtuynNRFL2s9hgxpLI5SQ=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
+
+    "@fontsource-variable/geologica": ["@fontsource-variable/geologica@5.2.8", "", {}, "sha512-hmUBi4k8C0xfi/pk/ArAyK7kRPqbkV5o/YN4nmJ+mtc14HKaAzdWAKb31gFWpveI75POgtcw3/iAepcGRnotYw=="],
+
+    "@fontsource/source-sans-pro": ["@fontsource/source-sans-pro@5.2.5", "", {}, "sha512-ypendqc4pYUc+EgF7qqPY9iVYEz1t/Qr03VojKxG/2g3dnpHa1B6DOlDxWQjQXDj5QrG6inEqGT0g+edjALZyg=="],
+
+    "@fontsource/source-serif-pro": ["@fontsource/source-serif-pro@5.2.5", "", {}, "sha512-MTsjMrl2+81dar37wV1taDYzU+o9ArcuBVBkXRNb6JuNCBmrKOIAAmI1wC3cE+Q0eAlgXlfNrvZ7swP3l2M8tQ=="],
 
     "@hapi/hoek": ["@hapi/hoek@9.3.0", "", {}, "sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ=="],
 

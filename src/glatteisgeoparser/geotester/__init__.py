@@ -1,4 +1,3 @@
-# from .cross_language_tester import CrossLanguageTester
 from typing import List
 
 import pandas as pd
@@ -17,3 +16,8 @@ class GlatteisGeoTester:
         return initialize_web_app(
             testing_data=testing_data, geodata=self.geoparsers[0].geodata
         )
+
+    def test_geoparsers(self, testing_data: pd.DataFrame):
+        for geoparser in self.geoparsers:
+            for line in testing_data.to_dict(orient="records"):
+                pass

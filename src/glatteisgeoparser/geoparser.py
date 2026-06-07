@@ -46,6 +46,7 @@ class GlatteisGeoparser:
             library=recogizer_configs.method,
             model=recogizer_configs.model,
         )
+
         self.resolver = Resolver(
             library=resolver_configs.method,
             language=language,

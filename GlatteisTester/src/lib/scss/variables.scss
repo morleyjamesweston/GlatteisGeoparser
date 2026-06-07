@@ -1,3 +1,17 @@
 $spacing-sm: 0.5rem;
 $spacing-md: 1rem;
 $spacing-lg: 1.5rem;
+
+$font-serif: 'Source Serif Pro', serif;
+$font-sans: 'Source Sans Pro', sans-serif;
+$font-ui: 'Geologica Variable', sans-serif;
+
+$foreground: oklch(0.1735 0.0173 64.59);
+$foreground-muted: oklch(0.2596 0.006 64.59);
+$background: oklch(0.9792 0 141);
+$background-muted: oklch(0.8561 0.0203 187.41);
+$border: oklch(0.5593 0.0203 187.41 / 50%);
+$accent: oklch(0.5853 0.1061 187.41);
+$accent-muted: oklch(0.5853 0.1061 187.41 / 50%);
+$selection: oklch(0.7878 0.1356 64.59);
+$selection-hovered: oklch(0.7878 0.1356 64.59 / 50%);

@@ -1,1 +1,38 @@
 @use './variables.scss' as *;
+
+:root {
+	font-family: $font-sans;
+}
+
+.flex-between {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: $spacing-md;
+}
+
+.flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: $spacing-md;
+}
+
+.flex-col {
+	display: flex;
+	flex-direction: column;
+	gap: $spacing-md;
+}
+
+h1 {
+	font-family: $font-sans;
+	font-size: 2.5rem;
+	color: $foreground;
+	margin: 0;
+}
+
+h2 {
+	font-family: $font-sans;
+	font-size: 1.75rem;
+	color: $foreground;
+}

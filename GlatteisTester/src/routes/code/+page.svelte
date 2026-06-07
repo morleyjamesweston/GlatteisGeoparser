@@ -3,6 +3,7 @@
 	import FeaturesBar from '$lib/components/features-bar.svelte';
 	import LocationMap from '$lib/components/location-map.svelte';
 	import SelectWords from '$lib/components/select-words.svelte';
+	import Button from '$lib/primitives/button.svelte';
 	import { removeHtmlContent } from '$lib/utilities/clean-text';
 	import { onMount } from 'svelte';
 
@@ -65,6 +66,26 @@
 		}
 	}
 
+	function submitNoneFound() {
+		const endpoint = 'http://127.0.0.1:5000/api/submit';
+		const payload = {
+			id: articleID, // replace with actual content ID if available
+			resolutions: 'none_found'
+		};
+
+		fetch(endpoint, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(payload)
+		});
+
+		submit();
+		advanceStage();
+		clearState();
+	}
+
 	function submit() {
 		const endpoint = 'http://127.0.0.1:5000/api/submit';
 		const payload = {
@@ -86,18 +107,24 @@
 	});
 </script>
 
-{#if stage == 'recognize'}
-	<h2>Choices</h2>
-	<ChoiceButtons bind:selected />
-	<h2>Content</h2>
-	<SelectWords {content} bind:selected enabled={stage == 'recognize'} />
-	<button onclick={advanceStage}>Next step</button>
-{:else if stage == 'resolve' && selected}
-	<FeaturesBar {selected} {resolvedFeatures} />
-	<h2>Locations</h2>
-	<LocationMap location={selected[resolveFeatureIdx]} bind:selectedFeature />
-	<button onclick={advanceResolutionTask}>Submit</button>
-{/if}
+<div class="flex-col">
+	{#if stage == 'recognize'}
+		<h2>Choices</h2>
+		<ChoiceButtons bind:selected />
+		<h2>Content</h2>
+		<SelectWords {content} bind:selected enabled={stage == 'recognize'} />
+
+		<div class="flex-between">
+			<Button onclick={advanceStage}>Next step</Button>
+			<Button onclick={submitNoneFound}>No locations found</Button>
+		</div>
+	{:else if stage == 'resolve' && selected}
+		<FeaturesBar {selected} {resolvedFeatures} />
+		<h2>Locations</h2>
+		<LocationMap location={selected[resolveFeatureIdx]} bind:selectedFeature />
+		<button onclick={advanceResolutionTask}>Submit</button>
+	{/if}
+</div>
 
 <style lang="scss">
 	:global(.scroll-container) {

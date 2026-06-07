@@ -1,6 +1,4 @@
 <script lang="ts">
-	// import sentencize from '@stdlib/nlp-sentencize';
-
 	let {
 		content,
 		selected = $bindable([]),
@@ -8,13 +6,6 @@
 	}: { content: string | null; selected: string[]; enabled: boolean } = $props();
 
 	let splitWords = $derived(content ? content.split(/\s+/) : []);
-
-	// nested list of split words inside split sentences
-	// let splitContent: string[][] = $derived.by(() => {
-	// 	if (!content) return [];
-	// 	const sentences = sentencize(content);
-	// 	return sentences.map((sentence) => sentence.split(/\s+/));
-	// });
 
 	let selectedRanges: Array<{ start: number; end: number }> = $state([]);
 
@@ -196,15 +187,20 @@
 	}
 
 	.word.hovered {
-		background: blue;
+		background: $selection-hovered;
 	}
 
 	.selected {
-		background: red;
+		background: $selection;
 	}
 
 	.select-container {
 		display: flex;
 		flex-wrap: wrap;
+		font-family: $font-serif;
+		padding: $spacing-md;
+		border: 1px solid $border;
+		background: $background;
+		border-radius: $spacing-sm;
 	}
 </style>

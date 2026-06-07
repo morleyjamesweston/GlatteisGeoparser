@@ -1,7 +1,11 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
 	import 'normalize.css';
+	import '@fontsource/source-serif-pro';
+	import '@fontsource/source-sans-pro';
+	import '@fontsource-variable/geologica/wght.css';
 	import '$lib/scss/global.scss';
+
 	let { children } = $props();
 	import { geoDataStore } from '$lib/stores/geodata.svelte';
 	geoDataStore.loadGeoData();
