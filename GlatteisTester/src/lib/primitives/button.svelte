@@ -29,11 +29,22 @@
 		font-size: 1.2rem;
 		/* background-color: var(--background); */
 		/* color: var(--foreground); */
-		/* border: 1px solid var(--border); */
+		border: 1px solid $border;
+		border-radius: $spacing-sm;
+		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		gap: 0.5rem;
-		/* font-weight: 200; */
+	}
+
+	.primary {
+		background-color: $accent;
+	}
+
+	.secondary {
+		background-color: transparent;
+		border-color: $accent;
+		color: $accent;
 	}
 </style>

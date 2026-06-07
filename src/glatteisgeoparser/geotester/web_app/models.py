@@ -1,0 +1,68 @@
+"""Database models for the geotester web app."""
+
+from flask_login import UserMixin
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+
+class Users(UserMixin, db.Model):
+    """User model for authentication."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=False)
+    admin = db.Column(db.Boolean, default=False)
+
+
+class ManualCoding(db.Model):
+    """Model for manual coding of geoparsing results."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    text_id = db.Column(db.String(250), nullable=False)
+    location_id = db.Column(db.String(250), nullable=False)
+    gazetteer = db.Column(db.String(250), nullable=False)
+
+
+class Geoparsers(db.Model):
+    """Model for storing geoparser configurations."""
+
+    hash_id = db.Column(db.String(250), primary_key=True)
+    configs_json = db.Column(db.Text, nullable=False)
+
+
+class MachineCoding(db.Model):
+    """Model for storing machine coding results."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    geoparser_hash_id = db.Column(
+        db.String(250), db.ForeignKey("geoparsers.hash_id"), nullable=False
+    )
+    text_id = db.Column(db.String(250), nullable=False)
+    location_id = db.Column(db.String(250), nullable=False)
+    gazetteer = db.Column(db.String(250), nullable=False)
+
+
+# # Users
+# is_admin
+# name
+# password
+
+# # Manual coding
+# id
+# user
+# text_id
+# location_id
+# gazetteer
+
+# # Geoparsers
+# hash_id
+# configs_json
+
+# # Machine coding
+# id
+# geoparser_hash_id
+# text_id
+# location_id
+# gazetteer

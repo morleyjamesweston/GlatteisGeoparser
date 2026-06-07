@@ -137,11 +137,70 @@ class GeoData:
         self._add_keywords(simplified_gdf["original_names"].tolist())
         self._add_keywords(simplified_gdf["standardized_names"].tolist())
 
-    def get_candidates(self, candidates: List[str]) -> gpd.GeoDataFrame | None:
+    def _token_similarity(
+        self, candidate: str, gazetteer_name: str, min_overlap: float = 0.8
+    ) -> bool:
+        """Check if candidate contains most tokens from gazetteer name.
+
+        Arguments:
+        candidate: The candidate string to search for
+        gazetteer_name: The gazetteer entry to match against
+        min_overlap: Minimum ratio of gazetteer tokens that must be in candidate (0.0-1.0)
+
+        Returns:
+        True if tokens sufficiently overlap, False otherwise
+        """
+        candidate_tokens = set(candidate.split())
+        gazetteer_tokens = set(gazetteer_name.split())
+
+        # If gazetteer is a subset of candidate tokens, it's a match
+        if gazetteer_tokens.issubset(candidate_tokens):
+            return True
+
+        # Check overlap ratio
+        if len(gazetteer_tokens) == 0:
+            return len(candidate_tokens) == 0
+
+        overlap = len(candidate_tokens & gazetteer_tokens) / len(gazetteer_tokens)
+        return overlap >= min_overlap
+
+    def get_candidates(
+        self,
+        candidates: List[str],
+        use_token_matching: bool = True,
+        token_overlap_ratio: float = 0.8,
+    ) -> gpd.GeoDataFrame | None:
+        """Get candidate locations from the gazetteer.
+
+        Arguments:
+        candidates: List of location names to search for
+        use_token_matching: If True, use token-based matching for flexibility.
+                          If False, use exact matching (default)
+        token_overlap_ratio: Minimum ratio of tokens that must match (0.0-1.0).
+                            Only used if use_token_matching=True.
+
+        Returns:
+        GeoDataFrame with matching candidates, or None if no matches found
+        """
         candidates = [standardize_name(c) for c in candidates]
-        df = self.combined_gazetteer[
-            self.combined_gazetteer["standardized_names"].isin(candidates)
-        ]
+
+        if not use_token_matching:
+            # Exact match (original behavior)
+            df = self.combined_gazetteer[
+                self.combined_gazetteer["standardized_names"].isin(candidates)
+            ]
+        else:
+            # Token-based matching
+            def matches_any_candidate(gaz_name: str) -> bool:
+                return any(
+                    self._token_similarity(c, gaz_name, token_overlap_ratio)
+                    for c in candidates
+                )
+
+            mask = self.combined_gazetteer["standardized_names"].apply(
+                matches_any_candidate
+            )
+            df = self.combined_gazetteer[mask]
 
         # if df is None or df.empty or type(df) is not gpd.GeoDataFrame:
         if df.empty or not isinstance(df, gpd.GeoDataFrame):

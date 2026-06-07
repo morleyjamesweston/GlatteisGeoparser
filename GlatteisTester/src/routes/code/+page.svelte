@@ -115,8 +115,8 @@
 		<SelectWords {content} bind:selected enabled={stage == 'recognize'} />
 
 		<div class="flex-between">
+			<Button variant="secondary" onclick={submitNoneFound}>No locations found</Button>
 			<Button onclick={advanceStage}>Next step</Button>
-			<Button onclick={submitNoneFound}>No locations found</Button>
 		</div>
 	{:else if stage == 'resolve' && selected}
 		<FeaturesBar {selected} {resolvedFeatures} />

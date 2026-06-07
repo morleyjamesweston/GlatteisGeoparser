@@ -12,6 +12,7 @@ dependencies = [
     "flashtext>=2.7",
     "geopandas>=1.1.3",
     "glattlibs",
+    "rapidfuzz>=3.14.5",
 ]
 
 [project.scripts]
