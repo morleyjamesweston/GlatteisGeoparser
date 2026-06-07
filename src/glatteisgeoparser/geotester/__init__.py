@@ -13,9 +13,7 @@ class GlatteisGeoTester:
         self.configs = configs
 
     def initialize_web_app(self, testing_data: pd.DataFrame):
-        return initialize_web_app(
-            testing_data=testing_data, geodata=self.geoparsers[0].geodata
-        )
+        return initialize_web_app(testing_data=testing_data, geoparsers=self.geoparsers)
 
     def test_geoparsers(self, testing_data: pd.DataFrame):
         for geoparser in self.geoparsers:

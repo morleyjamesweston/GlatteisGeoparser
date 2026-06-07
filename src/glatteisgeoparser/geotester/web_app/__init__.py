@@ -1,5 +1,6 @@
 import os
 from pprint import pprint
+from typing import List
 
 import flask_login
 import pandas as pd
@@ -24,12 +25,12 @@ from flask_login import (
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from glatteisgeoparser.geodata import GeoData
+from glatteisgeoparser import GlatteisGeoparser
 
 users = {"foo@bar.tld": {"password": "secret"}}
 
 
-def initialize_web_app(testing_data: pd.DataFrame, geodata: GeoData):
+def initialize_web_app(testing_data: pd.DataFrame, geoparsers: List[GlatteisGeoparser]):
     """Create and configure the testing framework Flask app."""
     # Get the path to the tester module's directory
     tester_module_path = os.path.dirname(os.path.abspath(__file__))
@@ -156,16 +157,26 @@ def initialize_web_app(testing_data: pd.DataFrame, geodata: GeoData):
         random_row = testing_data.sample(n=1)
         return jsonify(random_row.to_dict(orient="records")[0])
 
-    @app.route("/api/get_geodata", methods=["GET"])
-    def get_geodata():
-        return jsonify(geodata.combined_gazetteer.to_json())
+    # @app.route("/api/get_geodata", methods=["GET"])
+    # def get_geodata():
+    #     return jsonify(geodata.combined_gazetteer.to_json())
 
     # get potential locations from a location name
     @app.route("/api/get_location_choices", methods=["GET"])
     def get_potential_locations():
         location = request.args.get("location")
         if location:
-            candidates = geodata.get_candidates([location])
+            all_candidates = pd.DataFrame()
+
+            for geoparser in geoparsers:
+                label = geoparser.label
+                candidates = geoparser.geodata.get_candidates([location])
+                if candidates:
+                    candidates["geoparser"] = label
+                    all_candidates = pd.concat(
+                        [all_candidates, candidates], ignore_index=True
+                    )
+
             if candidates is not None and not candidates.empty:
                 return jsonify(candidates.to_json())
             else:

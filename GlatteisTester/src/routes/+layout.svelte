@@ -7,8 +7,8 @@
 	import '$lib/scss/global.scss';
 
 	let { children } = $props();
-	import { geoDataStore } from '$lib/stores/geodata.svelte';
-	geoDataStore.loadGeoData();
+	// import { geoDataStore } from '$lib/stores/geodata.svelte';
+	// geoDataStore.loadGeoData();
 </script>
 
 <svelte:head>
