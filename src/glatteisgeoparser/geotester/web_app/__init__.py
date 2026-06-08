@@ -10,7 +10,7 @@ from flask_login import LoginManager
 
 from glatteisgeoparser import GlatteisGeoparser
 
-from .api import register_code_routes
+from .api import register_code_routes, register_dashboard_routes
 from .auth import register_auth_routes
 from .models import Users, db
 from .static_routes import register_static_routes
@@ -60,6 +60,7 @@ def initialize_web_app(
     register_auth_routes(app, static_folder)
     register_code_routes(app, testing_data, geoparsers)
     register_static_routes(app, static_folder)
+    register_dashboard_routes(app)
 
     # Enable CORS for all routes with proper credential support
     # Note: When using credentials, we can't use wildcard origins

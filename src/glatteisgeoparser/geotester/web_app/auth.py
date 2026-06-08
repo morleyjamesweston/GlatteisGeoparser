@@ -81,12 +81,6 @@ def register_auth_routes(app, static_folder):
 
         return send_from_directory(static_folder, "auth/login.html")
 
-    @app.route("/dashboard")
-    @login_required
-    def dashboard():
-        """Protected dashboard route."""
-        return render_template("dashboard.html", username=current_user.username)
-
     @app.route("/auth/logout")
     @login_required
     def logout():

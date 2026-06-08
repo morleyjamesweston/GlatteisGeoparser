@@ -109,4 +109,4 @@ def test_geotester():
     )
 
     tester = GlatteisGeoTester(configs=GeoTesterConfigs(), geoparsers=[gigp1, gigp2])
-    tester.test_geoparsers(testing_data=testing_data)
+    tester.run_geoparsers(testing_data=testing_data)

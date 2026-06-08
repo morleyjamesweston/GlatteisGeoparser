@@ -37,7 +37,7 @@
 		apiGet('/api/next_content')
 			.then((data) => {
 				content = removeHtmlContent(data.content);
-				content = 'Lausanne Genf Bern Freiberg Zürich';
+				// content = 'Lausanne Genf Bern Freiberg Zürich';
 				articleID = data.id;
 			})
 			.catch((error) => {

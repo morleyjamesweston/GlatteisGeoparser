@@ -51,7 +51,13 @@ class GlatteisGeoTester:
                     session.add(new_entry)
                     session.commit()
 
-    def test_geoparsers(self, testing_data: pd.DataFrame):
+    def get_test_results(self):
+        with self.cli_app.app_context():
+            session = get_db_session(self.cli_app)
+            machine_coding = session.query(MachineCoding).all()
+            manual_coding = session.query(MachineCoding).all()
+
+    def run_geoparsers(self, testing_data: pd.DataFrame):
         for geoparser in self.geoparsers:
             print(f"Testing geoparser: {geoparser.label}")
             with self.cli_app.app_context():

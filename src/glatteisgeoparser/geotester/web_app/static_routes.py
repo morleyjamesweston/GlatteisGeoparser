@@ -9,6 +9,12 @@ from flask_login import login_required
 def register_static_routes(app, static_folder):
     """Register static file serving routes to the Flask app."""
 
+    @app.route("/dashboard")
+    @login_required
+    def serve_dashboard():
+        """Serve the code.html file."""
+        return send_from_directory(static_folder, "dashboard.html")
+
     @app.route("/code")
     @login_required
     def serve_code():
