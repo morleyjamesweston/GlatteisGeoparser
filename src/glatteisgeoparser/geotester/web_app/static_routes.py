@@ -3,12 +3,14 @@
 import os
 
 from flask import send_from_directory
+from flask_login import login_required
 
 
 def register_static_routes(app, static_folder):
     """Register static file serving routes to the Flask app."""
 
     @app.route("/code")
+    @login_required
     def serve_code():
         """Serve the code.html file."""
         return send_from_directory(static_folder, "code.html")

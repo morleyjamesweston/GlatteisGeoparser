@@ -21,8 +21,10 @@ def register_auth_routes(app, static_folder):
     def register():
         """User registration endpoint."""
         if request.method == "POST":
-            username = request.form.get("username")
-            password = request.form.get("password")
+            data = request.get_json()
+            username = data.get("username")
+            password = data.get("password")
+            print(f"Received registration request for username: {username}")
 
             if Users.query.filter_by(username=username).first():
                 print(f"Registration failed: Username '{username}' already taken")
@@ -48,23 +50,16 @@ def register_auth_routes(app, static_folder):
             db.session.add(new_user)
             db.session.commit()
 
-            return redirect(url_for("login"))
+            return jsonify({"success": True, "message": "Registration successful"}), 201
         return send_from_directory(static_folder, "auth/register.html")
 
     @app.route("/auth/login", methods=["GET", "POST"])
     def login():
         """User login endpoint."""
         if request.method == "POST":
-            # Handle JSON data from SvelteKit frontend
-            print("Received login request with content type:", request.content_type)
-            if request.is_json:
-                data = request.get_json()
-                username = data.get("username")
-                password = data.get("password")
-            else:
-                # Handle traditional form data
-                username = request.form.get("username")
-                password = request.form.get("password")
+            data = request.get_json()
+            username = data.get("username")
+            password = data.get("password")
 
             user = Users.query.filter_by(username=username).first()
 

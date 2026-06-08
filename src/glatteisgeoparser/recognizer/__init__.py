@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Union
+from typing import List, Union
 
 # from .ollama import OllamaRecognizer
 from .spacy import SpacyNLP
@@ -42,5 +42,5 @@ class Recognizer:
         else:
             raise ValueError("TODO: More")
 
-    def __call__(self, text):
+    def __call__(self, text) -> List[str]:
         return self.nlp(text)
