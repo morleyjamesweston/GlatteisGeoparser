@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 from ..configs import GeoTesterConfigs
 from ..geoparser import GlatteisGeoparser
+from .testing_functions import get_inter_geoparser_agreement
 from .web_app import initialize_web_app
 from .web_app.models import Geoparsers, MachineCoding, db, get_db_session
 
@@ -54,8 +55,13 @@ class GlatteisGeoTester:
     def get_test_results(self):
         with self.cli_app.app_context():
             session = get_db_session(self.cli_app)
-            machine_coding = session.query(MachineCoding).all()
-            manual_coding = session.query(MachineCoding).all()
+
+            machine_coding_df = pd.read_sql(
+                session.query(MachineCoding).statement, db.engine
+            )
+
+            igp = get_inter_geoparser_agreement(machine_coding_df)
+            return igp
 
     def run_geoparsers(self, testing_data: pd.DataFrame):
         for geoparser in self.geoparsers:

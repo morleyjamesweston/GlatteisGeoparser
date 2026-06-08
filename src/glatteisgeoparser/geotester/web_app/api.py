@@ -9,6 +9,7 @@ from flask_login import current_user
 from sqlalchemy import func
 
 from glatteisgeoparser import GlatteisGeoparser
+from glatteisgeoparser.geotester.testing_functions import get_inter_geoparser_agreement
 from glatteisgeoparser.geotester.web_app.models import (
     MachineCoding,
     ManualCoding,
@@ -178,4 +179,6 @@ def register_dashboard_routes(app):
         # 3   4        1        Zürich      47012         261  swissMunicipalities
         # 4   5        1      Freiberg      51224         NaN                  NaN
 
-        return jsonify({"message": "Tests run successfully", "success": True}), 200
+        igp = get_inter_geoparser_agreement(machine_coding_df)
+
+        return jsonify({"inter_geoparser_agreement": igp}), 200
