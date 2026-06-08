@@ -64,6 +64,7 @@ def register_auth_routes(app, static_folder):
             user = Users.query.filter_by(username=username).first()
 
             if user and password and check_password_hash(user.password, password):
+                print(f"Login successful for username: {username}")
                 login_user(user)
                 return jsonify({"success": True, "message": "Login successful"})
             else:
@@ -92,3 +93,28 @@ def register_auth_routes(app, static_folder):
         """User logout endpoint."""
         logout_user()
         return redirect(url_for("login"))
+
+    @app.route("/api/user")
+    def get_current_user():
+        print("here")
+        """API endpoint to get current user data."""
+        if current_user.is_authenticated:
+            print("here2 authenticated")
+            return jsonify(
+                {
+                    "loggedIn": True,
+                    "username": current_user.username,
+                    "isAdmin": current_user.is_admin,
+                    "isAuthenticated": True,
+                }
+            )
+        else:
+            print("here 3 not authenticated")
+            return jsonify(
+                {
+                    "loggedIn": False,
+                    "username": None,
+                    "isAdmin": False,
+                    "isAuthenticated": False,
+                }
+            )

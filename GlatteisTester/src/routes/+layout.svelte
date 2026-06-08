@@ -5,15 +5,23 @@
 	import '@fontsource/source-sans-pro';
 	import '@fontsource-variable/geologica/wght.css';
 	import '$lib/scss/global.scss';
+	import { userData } from '$lib/stores/user.svelte';
 
 	let { children } = $props();
-	// import { geoDataStore } from '$lib/stores/geodata.svelte';
-	// geoDataStore.loadGeoData();
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
+
+{#if userData.isAuthenticated}
+	<div>Welcome, {userData.username}!</div>
+	{#if userData.isAdmin}
+		<div>You have admin privileges</div>
+	{/if}
+{:else}
+	<div>Please log in</div>
+{/if}
 
 <div class="container">
 	{@render children()}

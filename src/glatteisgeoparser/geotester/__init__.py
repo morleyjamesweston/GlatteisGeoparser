@@ -112,8 +112,8 @@ class GlatteisGeoTester:
                         for candidate in candidates:
                             machine_result = MachineCoding(
                                 geoparser_label=geoparser.label,
-                                content_id=candidate,
-                                location_name=None,
+                                content_id=line["id"],
+                                location_name=candidate,
                                 location_id=None,
                                 gazetteer=None,
                             )

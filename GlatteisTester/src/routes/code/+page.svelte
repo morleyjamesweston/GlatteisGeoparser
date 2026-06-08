@@ -5,6 +5,7 @@
 	import SelectWords from '$lib/components/select-words.svelte';
 	import Button from '$lib/primitives/button.svelte';
 	import { removeHtmlContent } from '$lib/utilities/clean-text';
+	import { apiGet, apiPost } from '$lib/api';
 	import { onMount } from 'svelte';
 
 	let articleID: string | null = $state(null);
@@ -32,12 +33,10 @@
 	}
 
 	function fetch_content() {
-		const endpoint = 'http://127.0.0.1:5000/api/next_content';
-		fetch(endpoint)
-			.then((response) => response.json())
+		apiGet('/api/next_content')
 			.then((data) => {
 				content = removeHtmlContent(data.content);
-				// content = 'Lausanne Genf Bern Freiberg Zürich';
+				content = 'Lausanne Genf Bern Freiberg Zürich';
 				articleID = data.id;
 			})
 			.catch((error) => {
@@ -67,18 +66,13 @@
 	}
 
 	function submitNoneFound() {
-		const endpoint = 'http://127.0.0.1:5000/api/submit';
 		const payload = {
 			id: articleID, // replace with actual content ID if available
 			resolutions: 'none_found'
 		};
 
-		fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(payload)
+		apiPost('/api/submit', payload).catch((error) => {
+			console.error('Error submitting:', error);
 		});
 
 		submit();
@@ -87,18 +81,13 @@
 	}
 
 	function submit() {
-		const endpoint = 'http://127.0.0.1:5000/api/submit';
 		const payload = {
 			id: articleID, // replace with actual content ID if available
 			resolutions: resolvedFeatures
 		};
 
-		fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(payload)
+		apiPost('/api/submit', payload).catch((error) => {
+			console.error('Error submitting:', error);
 		});
 	}
 

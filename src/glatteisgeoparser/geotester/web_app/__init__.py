@@ -61,8 +61,14 @@ def initialize_web_app(
     register_code_routes(app, testing_data, geoparsers)
     register_static_routes(app, static_folder)
 
-    # Enable CORS for all routes
-    CORS(app, supports_credentials=True)
+    # Enable CORS for all routes with proper credential support
+    # Note: When using credentials, we can't use wildcard origins
+    CORS(
+        app,
+        supports_credentials=True,
+        allow_headers=["Content-Type"],
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    )
 
     return app
 

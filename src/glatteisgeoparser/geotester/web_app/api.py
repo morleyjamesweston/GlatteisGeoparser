@@ -5,8 +5,10 @@ from typing import List
 
 import pandas as pd
 from flask import jsonify, request
+from flask_login import current_user
 
 from glatteisgeoparser import GlatteisGeoparser
+from glatteisgeoparser.geotester.web_app.models import ManualCoding
 
 
 def register_code_routes(
@@ -48,6 +50,35 @@ def register_code_routes(
     def submit():
         """Handle submission of test results."""
         data = request.get_json()
-        print("Received submission:")
         pprint(data)
-        return jsonify({"message": "Submission received successfully"})
+
+        if current_user.is_authenticated:
+            for resolution in data.get("resolutions", []).items():
+                coding_entry = ManualCoding(
+                    user_id=current_user.id, content_id=data.get("id", None)
+                )
+
+            #     content_id=data.get("content_id"),
+            #     location_name=data.get("location_name"),
+            #     location_id=data.get("location_id"),
+            #     gazetteer=data.get("gazetteer")
+            # )
+            # db.session.add(coding_entry)
+            # db.session.commit()
+            return jsonify(
+                {"message": "Submission received successfully", "success": True}
+            )
+        else:
+            print("User not authenticated")
+            return jsonify({"message": "User not authenticated", "success": False}), 401
+
+
+# class ManualCoding(db.Model):
+#     """Model for manual coding of geoparsing results."""
+
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+#     content_id = db.Column(db.String(250), nullable=False)
+#     location_name = db.Column(db.String(250), nullable=False)
+#     location_id = db.Column(db.String(250), nullable=False)
+#     gazetteer = db.Column(db.String(250), nullable=False)

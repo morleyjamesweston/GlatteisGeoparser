@@ -3,6 +3,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { loginSchema } from './schema';
 	import { valibotClient, valibot } from 'sveltekit-superforms/adapters';
+	import { buildApiUrl } from '$lib/api';
 
 	let errorMessage = $state('');
 	let isLoading = $state(false);
@@ -16,10 +17,8 @@
 				isLoading = true;
 				errorMessage = '';
 
-				const endpoint = 'http://127.0.0.1:5000/auth/login';
-				console.log('Submitting to endpoint:', endpoint);
 				console.log('Form data:', form.data);
-				fetch(endpoint, {
+				fetch(buildApiUrl('/auth/login'), {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
@@ -28,7 +27,9 @@
 					credentials: 'include'
 				})
 					.then((response) => {
+						console.log('res');
 						if (response.ok) {
+							console.log('res1');
 							return response.json().then(() => {
 								// Redirect to dashboard on successful login
 								window.location.href = '/dashboard';
