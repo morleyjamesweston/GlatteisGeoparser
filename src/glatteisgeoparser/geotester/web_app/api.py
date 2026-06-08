@@ -8,7 +8,7 @@ from flask import jsonify, request
 from flask_login import current_user
 
 from glatteisgeoparser import GlatteisGeoparser
-from glatteisgeoparser.geotester.web_app.models import ManualCoding
+from glatteisgeoparser.geotester.web_app.models import ManualCoding, get_db_session
 
 
 def register_code_routes(
@@ -50,35 +50,31 @@ def register_code_routes(
     def submit():
         """Handle submission of test results."""
         data = request.get_json()
-        pprint(data)
 
         if current_user.is_authenticated:
-            for resolution in data.get("resolutions", []).items():
-                coding_entry = ManualCoding(
-                    user_id=current_user.id, content_id=data.get("id", None)
-                )
+            pprint(f"Received submission data: {data}")
+            session = get_db_session(app)
+            for resolution in data.get("resolutions", {}).values():
+                # pprint(f"Processing resolution for location: {resolution}")
+                print("RESOLUTION IS:")
+                pprint(resolution)
+                if resolution is None:
+                    pass
+                else:
+                    coding_entry = ManualCoding(
+                        user_id=current_user.id,
+                        content_id=data.get("id", None),
+                        location_name=resolution.get("original_names", ""),
+                        location_id=resolution.get("original_index", ""),
+                        gazetteer=resolution.get("gazetteer_name", ""),
+                    )
+                    pprint(f"Created coding entry: {coding_entry}")
+                    session.add(coding_entry)
+            session.commit()
 
-            #     content_id=data.get("content_id"),
-            #     location_name=data.get("location_name"),
-            #     location_id=data.get("location_id"),
-            #     gazetteer=data.get("gazetteer")
-            # )
-            # db.session.add(coding_entry)
-            # db.session.commit()
             return jsonify(
                 {"message": "Submission received successfully", "success": True}
             )
         else:
             print("User not authenticated")
             return jsonify({"message": "User not authenticated", "success": False}), 401
-
-
-# class ManualCoding(db.Model):
-#     """Model for manual coding of geoparsing results."""
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-#     content_id = db.Column(db.String(250), nullable=False)
-#     location_name = db.Column(db.String(250), nullable=False)
-#     location_id = db.Column(db.String(250), nullable=False)
-#     gazetteer = db.Column(db.String(250), nullable=False)

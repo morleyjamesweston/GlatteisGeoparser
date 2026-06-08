@@ -15,17 +15,41 @@
 	import VectorLayer from 'ol/layer/Vector.js';
 	import { stripPunctuation } from '$lib/utilities/strip-punctuation';
 	import FeatureChoices from './feature-choices.svelte';
+	import type { ReturnGeoDataFeature } from '$lib/interfaces';
 
 	let {
 		location,
-		selectedFeature = $bindable('')
-	}: { location: string; selectedFeature?: string } = $props();
+		// eslint-disable-next-line no-useless-assignment
+		selectedGeoData = $bindable(null)
+	}: { location: string; selectedGeoData: ReturnGeoDataFeature | null } = $props();
 	let map: Map | null = null;
 	let vectorLayer: VectorLayer<VectorSource> | null = null;
 	let geodata: GeoData | null = $state(null);
 	let features: Array<GeoDataFeature> = $state([]);
 	let hoveredFeature = $state<string | null>(null);
-	// let selectedFeature = $state<string>('');
+
+	let selectedFeature = $state<string>('');
+
+	$effect(() => {
+		if (selectedFeature) {
+			const selectedData = features.find((feature) => feature.id === selectedFeature) || null;
+			if (selectedData) {
+				selectedGeoData = {
+					id: selectedData.id,
+					original_names: selectedData.properties.original_names,
+					original_index: selectedData.properties.original_index,
+					gazetteer_name: selectedData.properties.gazetteer_name
+				};
+			} else if (selectedFeature === 'none_found') {
+				selectedGeoData = {
+					id: 'none_found',
+					original_names: location,
+					original_index: null,
+					gazetteer_name: null
+				};
+			}
+		}
+	});
 
 	const defaultStyle = new Style({
 		fill: new Fill({
@@ -82,6 +106,7 @@
 		id: string;
 		properties: {
 			original_names: string;
+			original_index: number | string;
 			gazetteer_name: string;
 		};
 		geometry: {
@@ -89,6 +114,7 @@
 			coordinates: unknown;
 		};
 	}
+
 	interface GeoData {
 		type: string;
 		features: GeoDataFeature[];
@@ -233,6 +259,7 @@
 
 <div id="mainMap" use:setupMap></div>
 <h2>Identify the correct feature:</h2>
+<!-- <pre>{JSON.stringify(features, null, 2)}</pre> -->
 <FeatureChoices {features} bind:hovered={hoveredFeature} bind:value={selectedFeature} />
 
 <style lang="scss">

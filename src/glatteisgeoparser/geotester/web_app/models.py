@@ -20,10 +20,10 @@ class ManualCoding(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    content_id = db.Column(db.String(250), nullable=False)
     location_name = db.Column(db.String(250), nullable=False)
-    location_id = db.Column(db.String(250), nullable=False)
-    gazetteer = db.Column(db.String(250), nullable=False)
+    content_id = db.Column(db.String(250), nullable=False)
+    location_id = db.Column(db.String(250), nullable=True)
+    gazetteer = db.Column(db.String(250), nullable=True)
 
 
 class Geoparsers(db.Model):
@@ -40,8 +40,8 @@ class MachineCoding(db.Model):
     geoparser_label = db.Column(
         db.String(250), db.ForeignKey("geoparsers.label"), nullable=False
     )
-    content_id = db.Column(db.String(250), nullable=False)
     location_name = db.Column(db.String(250), nullable=False)
+    content_id = db.Column(db.String(250), nullable=False)
     location_id = db.Column(db.String(250), nullable=True)
     gazetteer = db.Column(db.String(250), nullable=True)
 

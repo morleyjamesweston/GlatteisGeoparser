@@ -7,18 +7,19 @@
 	import { removeHtmlContent } from '$lib/utilities/clean-text';
 	import { apiGet, apiPost } from '$lib/api';
 	import { onMount } from 'svelte';
+	import type { ReturnGeoDataFeature } from '$lib/interfaces';
 
 	let articleID: string | null = $state(null);
 	let content: string | null = $state(null);
 	let selected = $state([]);
 	let stage: 'recognize' | 'resolve' = $state('recognize');
 
-	let resolvedFeatures: Record<string, string> = $state({});
+	let resolvedFeatures: Record<string, ReturnGeoDataFeature | null> = $state({});
 	let resolveFeatureIdx = $state(0);
-	let selectedFeature = $state('');
+	let selectedFeature: ReturnGeoDataFeature | null = $state(null);
 
 	$effect(() => {
-		if (selectedFeature === 'none_found') {
+		if (selectedFeature && selectedFeature.id === null) {
 			advanceResolutionTask();
 		}
 	});
@@ -50,14 +51,14 @@
 		stage = 'recognize';
 		resolvedFeatures = {};
 		resolveFeatureIdx = 0;
-		selectedFeature = '';
+		selectedFeature = null;
 	}
 
 	function advanceResolutionTask() {
 		resolvedFeatures[selected[resolveFeatureIdx]] = selectedFeature;
 		if (resolveFeatureIdx < selected.length - 1) {
 			resolveFeatureIdx += 1;
-			selectedFeature = '';
+			selectedFeature = null;
 		} else {
 			submit();
 			advanceStage();
@@ -110,7 +111,7 @@
 	{:else if stage == 'resolve' && selected}
 		<FeaturesBar {selected} {resolvedFeatures} />
 		<h2>Locations</h2>
-		<LocationMap location={selected[resolveFeatureIdx]} bind:selectedFeature />
+		<LocationMap location={selected[resolveFeatureIdx]} bind:selectedGeoData={selectedFeature} />
 		<button onclick={advanceResolutionTask}>Submit</button>
 	{/if}
 </div>
