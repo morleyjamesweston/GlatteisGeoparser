@@ -6,9 +6,22 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import type { CodedLoc } from '$lib/interfaces';
 	import CodingDisplay from './coding-display.svelte';
+	import { onMount } from 'svelte';
+	import type { GeoParserEvaluation, ResolutionRatio } from '$lib/interfaces';
+	import ResolvedChart from './resolved-chart.svelte';
 
 	let allCoded: { machine_coding: CodedLoc[]; manual_coding: CodedLoc[] } | null = $state(null);
 	let selectedContentID = $state('');
+	let resolutionRatios: { [key: string]: ResolutionRatio } | null = $state(null);
+
+	async function getGeoparserEvaluation() {
+		try {
+			const data: GeoParserEvaluation = await apiGet('/api/dashboard/geoparser_evaluation');
+			resolutionRatios = data.total_locs_per_geoparser;
+		} catch (err) {
+			console.error('Error fetching geoparser evaluation data:', err);
+		}
+	}
 
 	async function getCodedData(content_id: string) {
 		try {
@@ -25,30 +38,40 @@
 			getCodedData(selectedContentID);
 		}
 	});
+
+	onMount(() => {
+		getGeoparserEvaluation();
+	});
 </script>
 
 <div class="grid grid-cols-1 gap-4 p-4 xl:grid-cols-4">
-	<CoderProgress />
+	<div class="flex flex-col gap-4">
+		<CoderProgress />
+		<ResolvedChart {resolutionRatios} />
+	</div>
 
-	<Card.Root>
-		<Card.Header>
-			{#if selectedContentID}
-				<Card.Title
-					>Content <span class="text-muted-foreground">(ID: {selectedContentID})</span></Card.Title
-				>
-			{:else}
-				<Card.Title>Select an article by ID number:</Card.Title>
-			{/if}
-			<Card.Description></Card.Description>
-			<Card.Action>
-				<ArticleSelector bind:value={selectedContentID} />
-			</Card.Action>
-		</Card.Header>
-		<Card.Content>
-			<ArticleText {selectedContentID} />
-		</Card.Content>
-		<Card.Footer></Card.Footer>
-	</Card.Root>
+	<div class="col-span-2 flex flex-col gap-4">
+		<Card.Root>
+			<Card.Header>
+				{#if selectedContentID}
+					<Card.Title
+						>Content <span class="text-muted-foreground">(ID: {selectedContentID})</span
+						></Card.Title
+					>
+				{:else}
+					<Card.Title>Select an article by ID number:</Card.Title>
+				{/if}
+				<Card.Description></Card.Description>
+				<Card.Action>
+					<ArticleSelector bind:value={selectedContentID} />
+				</Card.Action>
+			</Card.Header>
+			<Card.Content>
+				<ArticleText {selectedContentID} />
+			</Card.Content>
+			<Card.Footer></Card.Footer>
+		</Card.Root>
 
-	<CodingDisplay codedLocs={allCoded?.machine_coding} />
+		<CodingDisplay codedLocs={allCoded?.machine_coding} />
+	</div>
 </div>

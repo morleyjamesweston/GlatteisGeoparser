@@ -4,7 +4,7 @@ from pprint import pprint
 from typing import List
 
 import pandas as pd
-from flask import jsonify, request, session
+from flask import jsonify, request
 from flask_login import current_user
 from sqlalchemy import func
 
@@ -212,8 +212,8 @@ def register_dashboard_routes(app, testing_data: pd.DataFrame):
 
         # manual_coding = session.query(MachineCoding).all()
 
-    @app.route("/api/dashboard/run_tests", methods=["GET"])
-    def run_tests():
+    @app.route("/api/dashboard/geoparser_evaluation", methods=["GET"])
+    def geoparser_evaluation():
         session = get_db_session(app)
 
         machine_coding_df = pd.read_sql(
@@ -241,6 +241,38 @@ def register_dashboard_routes(app, testing_data: pd.DataFrame):
         # 3   4        1        Zürich      47012         261  swissMunicipalities
         # 4   5        1      Freiberg      51224         NaN                  NaN
 
-        igp = get_inter_geoparser_agreement(machine_coding_df)
+        # igp = get_inter_geoparser_agreement(machine_coding_df)
+        # print(igp)
+        total_locs_per_geoparser = get_total_locs_per_geoparser(machine_coding_df)
 
-        return jsonify({"inter_geoparser_agreement": igp}), 200
+        return jsonify({"total_locs_per_geoparser": total_locs_per_geoparser}), 200
+
+
+def get_total_locs_per_geoparser(df: pd.DataFrame):
+    """
+    Gets the total number of resolved and unresolved locations per geoparser.
+    A resolved location is one with a location_id
+    (i.e., it was successfully matched to a gazetteer entry).
+    """
+    total_locs_per_geoparser = {}
+
+    # Group by geoparser_label
+    for gp_label, geoparser_df in df.groupby("geoparser_label"):
+        resolved = geoparser_df["location_id"].notna().sum()
+        unresolved = geoparser_df["location_id"].isna().sum()
+
+        total_locs_per_geoparser[gp_label] = {
+            "resolved": int(resolved),
+            "unresolved": int(unresolved),
+        }
+
+    return total_locs_per_geoparser
+
+    #    id       geoparser_label location_name content_id location_id                gazetteer
+    # 0   1  eae9b2add8a088590639        Kanada   39856255         CAN  natural_earth_countries
+    # 1   2  eae9b2add8a088590639    Australien   39856255         AUS  natural_earth_countries
+    # 2   3  eae9b2add8a088590639    Neuseeland   39856255         NZL  natural_earth_countries
+    # 3   4  eae9b2add8a088590639       Staaten   39856255         NaN                      NaN
+    # 4   5  eae9b2add8a088590639         China   39856255         NaN                      NaN
+
+    # {gp_label: {resolved: 100, unresolved: 200}, ...}

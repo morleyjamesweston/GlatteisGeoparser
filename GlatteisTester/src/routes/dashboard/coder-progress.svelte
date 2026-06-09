@@ -33,24 +33,22 @@
 		<Card.Description>Here you can see the coding progress of each human coder.</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		<ScrollArea class="h-40 w-full">
-			<div class="flex flex-col gap-2">
-				{#if progress}
-					{#each progress.coding_progress as coder (coder.user_id)}
-						<div class="flex items-center gap-4 px-2">
-							<span>{coder.username}</span>
-							<Progress value={(coder.coded_count / progress.total_test_data) * 100} />
-							<div class="text-nowrap">{coder.coded_count} / {progress.total_test_data}</div>
-						</div>
-					{/each}
-				{:else}
-					<Skeleton class="h-4 w-full" />
-					<Skeleton class="h-4 w-full" />
-					<Skeleton class="h-4 w-full" />
-					<Skeleton class="h-4 w-full" />
-					<Skeleton class="h-4 w-full" />
-				{/if}
-			</div>
-		</ScrollArea>
+		<div class="flex flex-col gap-2">
+			{#if progress}
+				{#each progress.coding_progress as coder (coder.user_id)}
+					<div class="flex items-center gap-4 px-2">
+						<span>{coder.username}</span>
+						<Progress value={(coder.coded_count / progress.total_test_data) * 100} />
+						<div class="text-nowrap">{coder.coded_count} / {progress.total_test_data}</div>
+					</div>
+				{/each}
+			{:else}
+				<Skeleton class="h-4 w-full" />
+				<Skeleton class="h-4 w-full" />
+				<Skeleton class="h-4 w-full" />
+				<Skeleton class="h-4 w-full" />
+				<Skeleton class="h-4 w-full" />
+			{/if}
+		</div>
 	</Card.Content>
 </Card.Root>
