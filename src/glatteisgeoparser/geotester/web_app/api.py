@@ -1,5 +1,6 @@
 """API endpoints for the geotester web app."""
 
+import json
 from typing import List
 
 import pandas as pd
@@ -9,6 +10,7 @@ from sqlalchemy import func
 
 from glatteisgeoparser import GlatteisGeoparser
 from glatteisgeoparser.geotester.web_app.models import (
+    Geoparsers,
     MachineCoding,
     ManualCoding,
     Users,
@@ -242,22 +244,28 @@ def register_dashboard_routes(
             ), 400
 
         # query db for article locations
-        # location_IDs =
         session = get_db_session(app)
-        machine_coding = (
-            session.query(MachineCoding).filter_by(content_id=content_id).all()
+        machine_coding_df = pd.read_sql(
+            session.query(MachineCoding).statement, db.engine
         )
-        manual_coding = (
-            session.query(ManualCoding).filter_by(content_id=content_id).all()
-        )
+        manual_coding_df = pd.read_sql(session.query(ManualCoding).statement, db.engine)
 
-        print(machine_coding)
-        print(manual_coding)
-        print(type(machine_coding))
-        print(type(manual_coding))
-        # TODO
+        print(machine_coding_df)
+        print(manual_coding_df)
 
         return {}, 200
+
+    @app.route("/api/dashboard/geoparser_configs", methods=["GET"])
+    def get_geoparser_configs():
+        session = get_db_session(app)
+
+        geoparser_configs = session.query(Geoparsers).all()
+
+        geoparser_configs = [
+            {"label": gp.label, "configs_json": json.loads(gp.configs_json)}
+            for gp in geoparser_configs
+        ]
+        return jsonify(geoparser_configs), 200
 
 
 def get_most_common_unresolved_locs_per_geoparser(df: pd.DataFrame):

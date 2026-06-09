@@ -45,46 +45,252 @@ export interface UnresolvedLocsPerGeoparser {
 	[key: string]: Array<{ count: number; name: string }>;
 }
 
-// spacy_test': [{'count': 27, 'name': 'USA'},
-//                 {'count': 26, 'name': 'Franken'},
-//                 {'count': 21, 'name': 'Kanton'},
-//                 {'count': 19, 'name': 'Stadt'},
-//                 {'count': 11, 'name': 'Europa'},
-//                 {'count': 11, 'name': 'Bund'},
-//                 {'count': 10, 'name': 'US-Präsident'},
-//                 {'count': 9, 'name': 'China'},
-//                 {'count': 9, 'name': 'Landes'},
-//                 {'count': 9, 'name': 'NA'},
-//                 {'count': 8, 'name': '>'},
-//                 {'count': 7, 'name': 'Staaten'},
-//                 {'count': 6, 'name': 'Kantons'},
-//                 {'count': 5, 'name': 'Corona'},
-//                 {'count': 5, 'name': 'schweiz'},
-//                 {'count': 5, 'name': 'Tessin'},
-//                 {'count': 5, 'name': 'Covid-19'},
-//                 {'count': 4, 'name': 'Grossbritannien'},
-//                 {'count': 4, 'name': 'Keystone</p></lg></tx'},
-//                 {'count': 4, 'name': 'Haus'}],
-//  'stanza_test': [{'count': 49, 'name': 'Schweizer'},
-//                  {'count': 29, 'name': 'USA'},
-//                  {'count': 26, 'name': 'US'},
-//                  {'count': 24, 'name': 'Zürcher'},
-//                  {'count': 13, 'name': 'Europa'},
-//                  {'count': 12, 'name': 'deutsche'},
-//                  {'count': 9, 'name': 'China'},
-//                  {'count': 8, 'name': 'amerikanische'},
-//                  {'count': 7, 'name': 'französischen'},
-//                  {'count': 7, 'name': 'deutschen'},
-//                  {'count': 6, 'name': 'europäischen'},
-//                  {'count': 6, 'name': 'Tessin'},
-//                  {'count': 6, 'name': 'britische'},
-//                  {'count': 5, 'name': 'Amerika'},
-//                  {'count': 5, 'name': 'israelische'},
-//                  {'count': 5, 'name': 'Basler'},
-//                  {'count': 4, 'name': 'Grossbritannien'},
-//                  {'count': 4, 'name': 'britischen'},
-//                  {'count': 4, 'name': 'italienischen'},
-//                  {'count': 4, 'name': 'Norweger'}]}
+// [
+//   {
+//     "configs_json": {
+//       "configs": {
+//         "gazetteers": {
+//           "naturalEarthPopulatedPlaces": {
+//             "admin_rank": 4,
+//             "index_col": "WOF_ID",
+//             "is_contextual": false,
+//             "name": "naturalEarthPopulatedPlaces",
+//             "names_col": "NAME_DE",
+//             "population_column": "POP_MIN"
+//           },
+//           "natural_earth_countries": {
+//             "admin_rank": 0,
+//             "index_col": "ADM0_A3",
+//             "is_contextual": true,
+//             "name": "natural_earth_countries",
+//             "names_col": "NAME_DE",
+//             "population_column": "POP_EST"
+//           },
+//           "swissCantons": {
+//             "admin_rank": 3,
+//             "index_col": "KANTONSNUM",
+//             "is_contextual": true,
+//             "name": "swissCantons",
+//             "names_col": "NAME",
+//             "population_column": "EINWOHNERZ"
+//           },
+//           "swissMunicipalities": {
+//             "admin_rank": 1,
+//             "index_col": "BFS_NUMMER",
+//             "is_contextual": false,
+//             "name": "swissMunicipalities",
+//             "names_col": "NAME",
+//             "population_column": "EINWOHNERZ"
+//           }
+//         },
+//         "language": "de",
+//         "recognizer": {
+//           "language": "de",
+//           "method": "spacy",
+//           "model": "de_core_news_sm"
+//         },
+//         "resolver": {
+//           "method": "statistical",
+//           "model": null
+//         }
+//       },
+//       "hash": "055479b7d9d8a3807f61"
+//     },
+//     "label": "055479b7d9d8a3807f61"
+//   },
+//   {
+//     "configs_json": {
+//       "configs": {
+//         "gazetteers": {
+//           "naturalEarthPopulatedPlaces": {
+//             "admin_rank": 4,
+//             "index_col": "WOF_ID",
+//             "is_contextual": false,
+//             "name": "naturalEarthPopulatedPlaces",
+//             "names_col": "NAME_DE",
+//             "population_column": "POP_MIN"
+//           },
+//           "natural_earth_countries": {
+//             "admin_rank": 3,
+//             "index_col": "ADM0_A3",
+//             "is_contextual": true,
+//             "name": "natural_earth_countries",
+//             "names_col": "NAME_DE",
+//             "population_column": "POP_EST"
+//           },
+//           "swissCantons": {
+//             "admin_rank": 3,
+//             "index_col": "KANTONSNUM",
+//             "is_contextual": true,
+//             "name": "swissCantons",
+//             "names_col": "NAME",
+//             "population_column": "EINWOHNERZ"
+//           },
+//           "swissDistricts": {
+//             "admin_rank": 2,
+//             "index_col": "BEZIRKSNUM",
+//             "is_contextual": false,
+//             "name": "swissDistricts",
+//             "names_col": "NAME",
+//             "population_column": "EINWOHNERZ"
+//           },
+//           "swissMunicipalities": {
+//             "admin_rank": 1,
+//             "index_col": "BFS_NUMMER",
+//             "is_contextual": false,
+//             "name": "swissMunicipalities",
+//             "names_col": "NAME",
+//             "population_column": "EINWOHNERZ"
+//           }
+//         },
+//         "language": "de",
+//         "recognizer": {
+//           "language": "de",
+//           "method": "spacy",
+//           "model": "de_core_news_sm"
+//         },
+//         "resolver": {
+//           "method": "statistical",
+//           "model": null
+//         }
+//       },
+//       "hash": "eae9b2add8a088590639"
+//     },
+//     "label": "eae9b2add8a088590639"
+//   },
+//   {
+//     "configs_json": {
+//       "configs": {
+//         "gazetteers": {
+//           "natural_earth_countries": {
+//             "admin_rank": 3,
+//             "index_col": "ADM0_A3",
+//             "is_contextual": true,
+//             "name": "natural_earth_countries",
+//             "names_col": "NAME_DE",
+//             "population_column": "POP_EST"
+//           }
+//         },
+//         "language": "de",
+//         "recognizer": {
+//           "language": "de",
+//           "method": "spacy",
+//           "model": "de_core_news_sm"
+//         },
+//         "resolver": {
+//           "method": "statistical",
+//           "model": null
+//         }
+//       },
+//       "hash": "27be2956b47f266cf0e6"
+//     },
+//     "label": "27be2956b47f266cf0e6"
+//   },
+//   {
+//     "configs_json": {
+//       "configs": {
+//         "gazetteers": {
+//           "naturalEarthPopulatedPlaces": {
+//             "admin_rank": 4,
+//             "index_col": "WOF_ID",
+//             "is_contextual": false,
+//             "name": "naturalEarthPopulatedPlaces",
+//             "names_col": "NAME_DE",
+//             "population_column": "POP_MIN"
+//           },
+//           "natural_earth_countries": {
+//             "admin_rank": 0,
+//             "index_col": "ADM0_A3",
+//             "is_contextual": true,
+//             "name": "natural_earth_countries",
+//             "names_col": "NAME_DE",
+//             "population_column": "POP_EST"
+//           },
+//           "swissCantons": {
+//             "admin_rank": 3,
+//             "index_col": "KANTONSNUM",
+//             "is_contextual": true,
+//             "name": "swissCantons",
+//             "names_col": "NAME",
+//             "population_column": "EINWOHNERZ"
+//           },
+//           "swissMunicipalities": {
+//             "admin_rank": 1,
+//             "index_col": "BFS_NUMMER",
+//             "is_contextual": false,
+//             "name": "swissMunicipalities",
+//             "names_col": "NAME",
+//             "population_column": "EINWOHNERZ"
+//           }
+//         },
+//         "language": "de",
+//         "recognizer": {
+//           "language": "de",
+//           "method": "spacy",
+//           "model": "de_core_news_lg"
+//         },
+//         "resolver": {
+//           "method": "statistical",
+//           "model": null
+//         }
+//       },
+//       "hash": "667847482144ba532965"
+//     },
+//     "label": "spacy_test"
+//   },
+//   {
+//     "configs_json": {
+//       "configs": {
+//         "gazetteers": {
+//           "naturalEarthPopulatedPlaces": {
+//             "admin_rank": 4,
+//             "index_col": "WOF_ID",
+//             "is_contextual": false,
+//             "name": "naturalEarthPopulatedPlaces",
+//             "names_col": "NAME_DE",
+//             "population_column": "POP_MIN"
+//           },
+//           "natural_earth_countries": {
+//             "admin_rank": 0,
+//             "index_col": "ADM0_A3",
+//             "is_contextual": true,
+//             "name": "natural_earth_countries",
+//             "names_col": "NAME_DE",
+//             "population_column": "POP_EST"
+//           },
+//           "swissCantons": {
+//             "admin_rank": 3,
+//             "index_col": "KANTONSNUM",
+//             "is_contextual": true,
+//             "name": "swissCantons",
+//             "names_col": "NAME",
+//             "population_column": "EINWOHNERZ"
+//           },
+//           "swissMunicipalities": {
+//             "admin_rank": 1,
+//             "index_col": "BFS_NUMMER",
+//             "is_contextual": false,
+//             "name": "swissMunicipalities",
+//             "names_col": "NAME",
+//             "population_column": "EINWOHNERZ"
+//           }
+//         },
+//         "language": "de",
+//         "recognizer": {
+//           "language": "de",
+//           "method": "stanza",
+//           "model": "de"
+//         },
+//         "resolver": {
+//           "method": "statistical",
+//           "model": null
+//         }
+//       },
+//       "hash": "b43b9dcb9fb1b6178e5b"
+//     },
+//     "label": "stanza_test"
+//   }
+// ]
 
 export interface GeoParserAgreementMetrics {
 	location_id_assigned_ratio_per_geoparser: Array<{

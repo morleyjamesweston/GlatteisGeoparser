@@ -18,6 +18,7 @@
 	import ResolvedChart from './resolved-chart.svelte';
 	import UnresolvedCounts from './unresolved-counts.svelte';
 	import CodingDisplayHuman from './coding-display-human.svelte';
+	import GeoparserConfigs from './geoparser-configs.svelte';
 
 	let allCoded: { machine_coding: CodedLoc[]; manual_coding: CodedLocHuman[] } | null =
 		$state(null);
@@ -92,6 +93,7 @@
 		<CodingDisplayHuman codedLocs={allCoded?.manual_coding} />
 	</div>
 	<div class="flex flex-col gap-4">
-		<ArticleMap {selectedContentID} />
+		<GeoparserConfigs />
+		<!-- <ArticleMap {selectedContentID} /> -->
 	</div>
 </div>

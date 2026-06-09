@@ -8,10 +8,12 @@
 	import { onMount } from 'svelte';
 	import type { ReturnGeoDataFeature } from '$lib/interfaces';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { stripPunctuation } from '$lib/utilities/strip-punctuation';
 
 	import CoderProgress from '$lib/components/coder-progress.svelte';
 
 	import * as Card from '$lib/components/ui/card/index.js';
+	import TextSnip from './text-snip.svelte';
 
 	let articleID: string | null = $state(null);
 	let content: string | null = $state(null);
@@ -102,8 +104,11 @@
 </script>
 
 <div class="grid w-full grid-cols-4">
-	<div class="pt-4 pl-4">
+	<div class="flex flex-col gap-4 pt-4 pl-4">
 		<CoderProgress />
+		{#if stage == 'resolve' && selected}
+			<TextSnip location={stripPunctuation(selected[resolveFeatureIdx])} text={content} />
+		{:else}{/if}
 	</div>
 	<div class="col-span-3 flex w-full flex-col gap-4 p-4">
 		{#if stage == 'recognize'}
@@ -147,9 +152,15 @@
 			</Card.Root>
 			<Card.Root class="w-full">
 				<Card.Header>
-					<Card.Title>Location options</Card.Title>
+					<Card.Title
+						>Location options for <span class="font-bold"
+							>{stripPunctuation(selected[resolveFeatureIdx])}</span
+						></Card.Title
+					>
 					<Card.Description
-						>Please choose the correct location from the choices below:</Card.Description
+						>Please choose the correct <span class="font-bold"
+							>{stripPunctuation(selected[resolveFeatureIdx])}</span
+						> from the choices below:</Card.Description
 					>
 				</Card.Header>
 				<Card.Content>
