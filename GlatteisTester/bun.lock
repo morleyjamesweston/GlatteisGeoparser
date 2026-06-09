@@ -33,6 +33,7 @@
         "@sveltejs/vite-plugin-svelte": "^7.0.0",
         "@tailwindcss/vite": "^4.2.2",
         "@types/d3": "^7.4.3",
+        "@types/d3-scale": "^4.0.9",
         "@types/gsap": "^3.0.0",
         "@types/node": "^24",
         "clsx": "^2.1.1",

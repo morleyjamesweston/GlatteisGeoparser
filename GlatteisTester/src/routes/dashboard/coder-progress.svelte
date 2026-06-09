@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Progress } from '$lib/components/ui/progress/index.js';
-	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import type { CodingProgress } from '$lib/interfaces';
 	import * as Card from '$lib/components/ui/card/index.js';

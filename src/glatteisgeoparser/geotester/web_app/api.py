@@ -244,8 +244,43 @@ def register_dashboard_routes(app, testing_data: pd.DataFrame):
         # igp = get_inter_geoparser_agreement(machine_coding_df)
         # print(igp)
         total_locs_per_geoparser = get_total_locs_per_geoparser(machine_coding_df)
+        unresolved_locs_per_geoparser = get_most_common_unresolved_locs_per_geoparser(
+            machine_coding_df
+        )
 
-        return jsonify({"total_locs_per_geoparser": total_locs_per_geoparser}), 200
+        # pprint(total_locs_per_geoparser)
+        pprint(unresolved_locs_per_geoparser)
+
+        return jsonify(
+            {
+                "total_locs_per_geoparser": total_locs_per_geoparser,
+                "unresolved_locs_per_geoparser": unresolved_locs_per_geoparser,
+            }
+        ), 200
+
+
+def get_most_common_unresolved_locs_per_geoparser(df: pd.DataFrame):
+    """
+    Gets the top 20 most common unresolved locations per geoparser.
+    with the name and count per location and geoparser.
+    """
+    most_common_unresolved_locs_per_geoparser = {}
+
+    # Filter for unresolved locations (where location_id is NaN)
+    unresolved_df = df[df["location_id"].isna()]
+
+    # Group by geoparser_label
+    for gp_label, geoparser_df in unresolved_df.groupby("geoparser_label"):
+        # Get value counts of location_name and take top 20
+        top_20_unresolved = geoparser_df["location_name"].value_counts().head(20)
+
+        # Convert to list of dicts with name and count
+        most_common_unresolved_locs_per_geoparser[gp_label] = [
+            {"name": location_name, "count": int(count)}
+            for location_name, count in top_20_unresolved.items()
+        ]
+
+    return most_common_unresolved_locs_per_geoparser
 
 
 def get_total_locs_per_geoparser(df: pd.DataFrame):
@@ -265,7 +300,9 @@ def get_total_locs_per_geoparser(df: pd.DataFrame):
             "resolved": int(resolved),
             "unresolved": int(unresolved),
         }
-
+    print("RES")
+    pprint(total_locs_per_geoparser)
+    print("RES")
     return total_locs_per_geoparser
 
     #    id       geoparser_label location_name content_id location_id                gazetteer

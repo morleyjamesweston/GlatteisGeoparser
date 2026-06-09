@@ -4,20 +4,24 @@
 	import ArticleSelector from './article-selector.svelte';
 	import ArticleText from './article-text.svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import type { CodedLoc } from '$lib/interfaces';
+	import type { CodedLoc, UnresolvedLocsPerGeoparser } from '$lib/interfaces';
 	import CodingDisplay from './coding-display.svelte';
 	import { onMount } from 'svelte';
 	import type { GeoParserEvaluation, ResolutionRatio } from '$lib/interfaces';
 	import ResolvedChart from './resolved-chart.svelte';
+	import UnresolvedCounts from './unresolved-counts.svelte';
 
 	let allCoded: { machine_coding: CodedLoc[]; manual_coding: CodedLoc[] } | null = $state(null);
 	let selectedContentID = $state('');
+
 	let resolutionRatios: { [key: string]: ResolutionRatio } | null = $state(null);
+	let unresolvedLocsPerGeoparser: UnresolvedLocsPerGeoparser | null = $state(null);
 
 	async function getGeoparserEvaluation() {
 		try {
 			const data: GeoParserEvaluation = await apiGet('/api/dashboard/geoparser_evaluation');
 			resolutionRatios = data.total_locs_per_geoparser;
+			unresolvedLocsPerGeoparser = data.unresolved_locs_per_geoparser;
 		} catch (err) {
 			console.error('Error fetching geoparser evaluation data:', err);
 		}
@@ -48,6 +52,7 @@
 	<div class="flex flex-col gap-4">
 		<CoderProgress />
 		<ResolvedChart {resolutionRatios} />
+		<UnresolvedCounts {unresolvedLocsPerGeoparser} />
 	</div>
 
 	<div class="col-span-2 flex flex-col gap-4">
