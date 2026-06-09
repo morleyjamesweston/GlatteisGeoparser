@@ -9,6 +9,8 @@
 	import type { ReturnGeoDataFeature } from '$lib/interfaces';
 	import Button from '$lib/components/ui/button/button.svelte';
 
+	import CoderProgress from '$lib/components/coder-progress.svelte';
+
 	import * as Card from '$lib/components/ui/card/index.js';
 
 	let articleID: string | null = $state(null);
@@ -99,62 +101,67 @@
 	});
 </script>
 
-<div class="flex w-full max-w-200 flex-col gap-4 p-4">
-	{#if stage == 'recognize'}
-		<Card.Root>
-			<Card.Header>
-				<Card.Title>Locations selected</Card.Title>
-				<Card.Description>Card Description</Card.Description>
-			</Card.Header>
-			<Card.Content>
-				<ChoiceButtons bind:selected />
-			</Card.Content>
-		</Card.Root>
+<div class="grid w-full grid-cols-4">
+	<div class="pt-4 pl-4">
+		<CoderProgress />
+	</div>
+	<div class="col-span-3 flex w-full flex-col gap-4 p-4">
+		{#if stage == 'recognize'}
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>Locations selected</Card.Title>
+					<Card.Description>Card Description</Card.Description>
+				</Card.Header>
+				<Card.Content>
+					<ChoiceButtons bind:selected />
+				</Card.Content>
+			</Card.Root>
 
-		<Card.Root>
-			<Card.Header>
-				<Card.Title>Content</Card.Title>
-				<Card.Description>
-					<span class="font-light">(Article: {articleID})</span>
-				</Card.Description>
-			</Card.Header>
-			<Card.Content class="h-120">
-				<SelectWords {content} bind:selected enabled={stage == 'recognize'} />
-			</Card.Content>
-			<Card.Footer class="flex justify-end gap-2">
-				<Button variant="outline" onclick={submitNoneFound}>No locations found</Button>
-				<Button onclick={advanceStage}>All locations recorded</Button>
-			</Card.Footer>
-		</Card.Root>
-	{:else if stage == 'resolve' && selected}
-		<Card.Root>
-			<Card.Header>
-				<Card.Title>Locations resolved</Card.Title>
-				<Card.Description
-					>These are the places you identified, the next step is to connect them to the correct
-					real-world location.</Card.Description
-				>
-			</Card.Header>
-			<Card.Content>
-				<FeaturesBar {selected} {resolvedFeatures} />
-			</Card.Content>
-		</Card.Root>
-		<Card.Root>
-			<Card.Header>
-				<Card.Title>Location options</Card.Title>
-				<Card.Description
-					>Please choose the correct location from the choices below:</Card.Description
-				>
-			</Card.Header>
-			<Card.Content>
-				<LocationMap
-					location={selected[resolveFeatureIdx]}
-					bind:selectedGeoData={selectedFeature}
-				/>
-			</Card.Content>
-			<Card.Footer class="flex justify-end gap-2">
-				<Button onclick={advanceResolutionTask}>Submit</Button>
-			</Card.Footer>
-		</Card.Root>
-	{/if}
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>Content</Card.Title>
+					<Card.Description>
+						<span class="font-light">(Article: {articleID})</span>
+					</Card.Description>
+				</Card.Header>
+				<Card.Content class="h-120">
+					<SelectWords {content} bind:selected enabled={stage == 'recognize'} />
+				</Card.Content>
+				<Card.Footer class="flex justify-end gap-2">
+					<Button variant="outline" onclick={submitNoneFound}>No locations found</Button>
+					<Button onclick={advanceStage}>All locations recorded</Button>
+				</Card.Footer>
+			</Card.Root>
+		{:else if stage == 'resolve' && selected}
+			<Card.Root class="w-full">
+				<Card.Header>
+					<Card.Title>Locations resolved</Card.Title>
+					<Card.Description
+						>These are the places you identified, the next step is to connect them to the correct
+						real-world location.</Card.Description
+					>
+				</Card.Header>
+				<Card.Content>
+					<FeaturesBar {selected} {resolvedFeatures} />
+				</Card.Content>
+			</Card.Root>
+			<Card.Root class="w-full">
+				<Card.Header>
+					<Card.Title>Location options</Card.Title>
+					<Card.Description
+						>Please choose the correct location from the choices below:</Card.Description
+					>
+				</Card.Header>
+				<Card.Content>
+					<LocationMap
+						location={selected[resolveFeatureIdx]}
+						bind:selectedGeoData={selectedFeature}
+					/>
+				</Card.Content>
+				<Card.Footer class="flex justify-end gap-2">
+					<Button onclick={advanceResolutionTask}>Submit</Button>
+				</Card.Footer>
+			</Card.Root>
+		{/if}
+	</div>
 </div>

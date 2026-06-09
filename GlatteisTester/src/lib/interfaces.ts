@@ -21,6 +21,13 @@ export interface CodedLoc {
 	location_id: number | null;
 	location_name: string;
 }
+export interface CodedLocHuman {
+	content_id: string;
+	user_id: string;
+	id: number;
+	location_id: number | null;
+	location_name: string;
+}
 
 export interface ResolutionRatio {
 	resolved: number;

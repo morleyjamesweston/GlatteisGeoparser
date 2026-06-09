@@ -6,18 +6,21 @@
 		CodedLoc,
 		UnresolvedLocsPerGeoparser,
 		GeoParserEvaluation,
-		ResolutionRatio
+		ResolutionRatio,
+		CodedLocHuman
 	} from '$lib/interfaces';
 
-	import CoderProgress from './coder-progress.svelte';
+	import CoderProgress from '$lib/components/coder-progress.svelte';
 	import ArticleSelector from './article-selector.svelte';
 	import ArticleText from './article-text.svelte';
 	import ArticleMap from './article-map.svelte';
 	import CodingDisplay from './coding-display.svelte';
 	import ResolvedChart from './resolved-chart.svelte';
 	import UnresolvedCounts from './unresolved-counts.svelte';
+	import CodingDisplayHuman from './coding-display-human.svelte';
 
-	let allCoded: { machine_coding: CodedLoc[]; manual_coding: CodedLoc[] } | null = $state(null);
+	let allCoded: { machine_coding: CodedLoc[]; manual_coding: CodedLocHuman[] } | null =
+		$state(null);
 	let selectedContentID = $state('');
 
 	let resolutionRatios: { [key: string]: ResolutionRatio } | null = $state(null);
@@ -86,7 +89,7 @@
 		<h1 class="font-lg font-heading">Machine coded</h1>
 		<CodingDisplay codedLocs={allCoded?.machine_coding} />
 		<h1 class="font-lg font-heading">Human coded</h1>
-		<CodingDisplay codedLocs={allCoded?.manual_coding} />
+		<CodingDisplayHuman codedLocs={allCoded?.manual_coding} />
 	</div>
 	<div class="flex flex-col gap-4">
 		<ArticleMap {selectedContentID} />

@@ -1,16 +1,13 @@
 """API endpoints for the geotester web app."""
 
-from pprint import pprint
 from typing import List
 
-import geopandas as gpd
 import pandas as pd
 from flask import jsonify, request
 from flask_login import current_user
 from sqlalchemy import func
 
 from glatteisgeoparser import GlatteisGeoparser
-from glatteisgeoparser.geotester.testing_functions import get_inter_geoparser_agreement
 from glatteisgeoparser.geotester.web_app.models import (
     MachineCoding,
     ManualCoding,
@@ -166,7 +163,7 @@ def register_dashboard_routes(
         manual_coding_data = [
             {
                 "id": item.id,
-                "geoparser_label": item.geoparser_label,
+                "user_id": item.user_id,
                 "content_id": item.content_id,
                 "location_name": item.location_name,
                 "location_id": item.location_id,
@@ -224,35 +221,10 @@ def register_dashboard_routes(
         )
         manual_coding_df = pd.read_sql(session.query(ManualCoding).statement, db.engine)
 
-        # print("Machine coding")
-        # print(machine_coding_df.head())
-        # print("\n\n Manual coding")
-        # print(manual_coding_df.head())
-
-        #    id       geoparser_label location_name content_id location_id                gazetteer
-        # 0   1  eae9b2add8a088590639        Kanada   39856255         CAN  natural_earth_countries
-        # 1   2  eae9b2add8a088590639    Australien   39856255         AUS  natural_earth_countries
-        # 2   3  eae9b2add8a088590639    Neuseeland   39856255         NZL  natural_earth_countries
-        # 3   4  eae9b2add8a088590639       Staaten   39856255         NaN                      NaN
-        # 4   5  eae9b2add8a088590639         China   39856255         NaN                      NaN
-
-        #  Manual coding
-        #    id  user_id location_name content_id location_id            gazetteer
-        # 0   1        1        Zürich      96723           1         swissCantons
-        # 1   2        1        Zürich      96723         261  swissMunicipalities
-        # 2   3        1        Zürich      47012         261  swissMunicipalities
-        # 3   4        1        Zürich      47012         261  swissMunicipalities
-        # 4   5        1      Freiberg      51224         NaN                  NaN
-
-        # igp = get_inter_geoparser_agreement(machine_coding_df)
-        # print(igp)
         total_locs_per_geoparser = get_total_locs_per_geoparser(machine_coding_df)
         unresolved_locs_per_geoparser = get_most_common_unresolved_locs_per_geoparser(
             machine_coding_df
         )
-
-        # pprint(total_locs_per_geoparser)
-        # pprint(unresolved_locs_per_geoparser)
 
         return jsonify(
             {
@@ -283,34 +255,9 @@ def register_dashboard_routes(
         print(manual_coding)
         print(type(machine_coding))
         print(type(manual_coding))
+        # TODO
 
         return {}, 200
-        # all_geodata = gpd.GeoDataFrame()
-        # for gazetteer, location_ID in location_IDs:
-        #     print(f"gazetteer: {gazetteer}, location_ID: {location_ID}")
-        #     for geoparser in geoparsers:
-        #         geodata = geoparser.geodata.combined_gazetteer[
-        #             geoparser.geodata.combined_gazetteer["original_index"]
-        #             == str(location_ID)
-        #         ]
-        #         print(geodata)
-        #         geodata = geodata[geodata["gazetteer_name"] == gazetteer]
-        #         print(geodata)
-        #         if not geodata.empty:
-        #             all_geodata = all_geodata.append(geodata)
-
-        #      original_index  original_names  admin_rank  population_column standardized_names                                           geometry               gazetteer_name  is_contextual
-        # 0               IDN      Indonesien           0        270625568.0         INDONESIEN  MULTIPOLYGON (((117.70361 4.16341, 117.70361 4...      natural_earth_countries           True
-        # 1               MYS        Malaysia           0         31949777.0           MALAYSIA  MULTIPOLYGON (((117.70361 4.16341, 117.69711 4...      natural_earth_countries           True
-        # 2               CHL           Chile           0         18952038.0              CHILE  MULTIPOLYGON (((-69.51009 -17.50659, -69.50611...      natural_earth_countries           True
-        # 3               BOL        Bolivien           0         11513100.0           BOLIVIEN  POLYGON ((-69.51009 -17.50659, -69.51009 -17.5...      natural_earth_countries           True
-        # 4               PER            Peru           0         32510453.0               PERU  MULTIPOLYGON (((-69.51009 -17.50659, -69.63832...      natural_earth_countries           True
-        # ...             ...             ...         ...                ...                ...                                                ...                          ...            ...
-        # 2696      101953261  Rio de Janeiro           4          2010175.0     RIO DE JANEIRO                        POINT (-43.21212 -22.90731)  naturalEarthPopulatedPlaces          False
-        # 2697     1141909435       São Paulo           4         10021295.0          SÃO PAULO                        POINT (-46.62697 -23.55673)  naturalEarthPopulatedPlaces          False
-        # 2698      101932003          Sydney           4          3641422.0             SYDNEY                        POINT (151.21255 -33.87137)  naturalEarthPopulatedPlaces          False
-        # 2699      102032341        Singapur           4          3289529.0           SINGAPUR                          POINT (103.85387 1.29498)  naturalEarthPopulatedPlaces          False
-        # 2700      890437279        Hongkong           4          4551579.0           HONGKONG                         POINT (114.18306 22.30693)  naturalEarthPopulatedPlaces          False
 
 
 def get_most_common_unresolved_locs_per_geoparser(df: pd.DataFrame):
@@ -355,12 +302,3 @@ def get_total_locs_per_geoparser(df: pd.DataFrame):
             "unresolved": int(unresolved),
         }
     return total_locs_per_geoparser
-
-    #    id       geoparser_label location_name content_id location_id                gazetteer
-    # 0   1  eae9b2add8a088590639        Kanada   39856255         CAN  natural_earth_countries
-    # 1   2  eae9b2add8a088590639    Australien   39856255         AUS  natural_earth_countries
-    # 2   3  eae9b2add8a088590639    Neuseeland   39856255         NZL  natural_earth_countries
-    # 3   4  eae9b2add8a088590639       Staaten   39856255         NaN                      NaN
-    # 4   5  eae9b2add8a088590639         China   39856255         NaN                      NaN
-
-    # {gp_label: {resolved: 100, unresolved: 200}, ...}

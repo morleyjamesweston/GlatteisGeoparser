@@ -251,7 +251,7 @@
 	});
 </script>
 
-<div id="mainMap" class="h-120 w-full" use:setupMap></div>
+<div id="mainMap" class="h-100 w-full" use:setupMap></div>
 <h2 class="mt-4 font-heading">Identify the correct feature:</h2>
 <Separator />
 <FeatureChoices {features} bind:hovered={hoveredFeature} bind:value={selectedFeature} />
