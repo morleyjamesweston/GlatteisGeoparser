@@ -90,10 +90,8 @@ def register_auth_routes(app, static_folder):
 
     @app.route("/api/user")
     def get_current_user():
-        print("here")
         """API endpoint to get current user data."""
         if current_user.is_authenticated:
-            print("here2 authenticated")
             return jsonify(
                 {
                     "loggedIn": True,
@@ -103,7 +101,6 @@ def register_auth_routes(app, static_folder):
                 }
             )
         else:
-            print("here 3 not authenticated")
             return jsonify(
                 {
                     "loggedIn": False,

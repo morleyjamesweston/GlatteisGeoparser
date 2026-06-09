@@ -85,7 +85,7 @@ configs = GeoTesterConfigs(
     data_path="./",
 )
 
-gt = GlatteisGeoTester(configs=configs, geoparsers=[gigp_spacy, gigp_stanza])
+gt = GlatteisGeoTester(configs=configs, geoparsers=[gigp_spacy])
 
 app = gt.initialize_web_app(testing_data=testing_data)
 app.run(debug=True)

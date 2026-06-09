@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Skeleton from '$lib/primitives/skeleton.svelte';
 	import { stripPunctuation } from '$lib/utilities/strip-punctuation';
+	import Button from './ui/button/button.svelte';
 
 	let { selected = $bindable() }: { selected: string[] } = $props();
 
@@ -12,32 +13,17 @@
 	);
 </script>
 
-<div class="container">
+<div class="h-24 w-full">
 	{#each uniqueSelected as item, idx (`${item}-${idx}`)}
-		<button
+		<Button
+			size="lg"
 			onclick={() => {
 				selected = selected.filter((_, i) => i !== idx);
 			}}
 		>
 			{stripPunctuation(item)}
-		</button>
+		</Button>
 	{:else}
 		<Skeleton height={6} text="Please identify all locations in the text." />
 	{/each}
 </div>
-
-<style lang="scss">
-	.container {
-		display: flex;
-		min-height: 6rem;
-		flex-wrap: wrap;
-		gap: $spacing-sm;
-		align-items: start;
-		justify-content: start;
-	}
-	button {
-		border: none;
-		background-color: #eee;
-		padding: 0.5rem 1rem;
-	}
-</style>

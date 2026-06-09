@@ -4,3 +4,12 @@ export interface ReturnGeoDataFeature {
 	original_index: number | string | null;
 	gazetteer_name: string | null;
 }
+
+export interface CodingProgress {
+	coding_progress: Array<{
+		coded_count: number;
+		user_id: number;
+		username: string;
+	}>;
+	total_test_data: number;
+}

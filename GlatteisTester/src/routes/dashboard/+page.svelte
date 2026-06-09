@@ -1,65 +1,62 @@
 <script lang="ts">
 	import { apiGet } from '$lib/api';
-	import Button from '$lib/primitives/button.svelte';
-	// import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
+	import CoderProgress from './coder-progress.svelte';
+	import ArticleSelector from './article-selector.svelte';
+	import ArticleText from './article-text.svelte';
+	import * as Card from '$lib/components/ui/card/index.js';
 
 	let allCoded = $state(null);
-	let progress = $state(null);
-	let isLoading = $state(false);
-	let error: string | null = $state(null);
+	let selectedContentID = $state('');
 
-	async function getAllCoded() {
-		isLoading = true;
-		error = null;
+	//     @app.route("/api/dashboard/coded/<content_id>", methods=["GET"])
+
+	async function getCodedData(content_id: string) {
 		try {
-			const data = await apiGet('/api/dashboard/all_coded');
-			console.log('All coded data:', data);
+			const data = await apiGet(`/api/dashboard/coded/${content_id}`);
+			console.log('Coded data:', data);
 			allCoded = data;
 		} catch (err) {
-			console.error('Error fetching all coded data:', err);
-			error = err instanceof Error ? err.message : 'An error occurred';
-		} finally {
-			isLoading = false;
+			console.error('Error fetching coded data:', err);
 		}
 	}
 
-	async function getProgress() {
-		isLoading = true;
-		error = null;
-		try {
-			const data = await apiGet('/api/dashboard/coding_progress');
-			console.log('Coding progress data:', data);
-			progress = data;
-		} catch (err) {
-			console.error('Error fetching all coded data:', err);
-			error = err instanceof Error ? err.message : 'An error occurred';
-		} finally {
-			isLoading = false;
+	$effect(() => {
+		if (selectedContentID) {
+			getCodedData(selectedContentID);
 		}
-	}
+	});
 </script>
 
-{#if error}
+<div class="grid grid-cols-1 gap-4 p-4 xl:grid-cols-4">
+	<CoderProgress />
+
+	<Card.Root>
+		<Card.Header>
+			{#if selectedContentID}
+				<Card.Title>Content {selectedContentID}</Card.Title>
+			{:else}
+				<Card.Title>Select an article by ID number:</Card.Title>
+			{/if}
+			<Card.Description></Card.Description>
+			<Card.Action>
+				<ArticleSelector bind:value={selectedContentID} />
+			</Card.Action>
+		</Card.Header>
+		<Card.Content>
+			<ArticleText {selectedContentID} />
+		</Card.Content>
+		<Card.Footer></Card.Footer>
+	</Card.Root>
+</div>
+
+<!-- {#if error}
 	<div class="error">Error: {error}</div>
 {/if}
-
 {#if isLoading}
 	<div>Loading...</div>
 {:else if allCoded}
 	<pre>{JSON.stringify(allCoded, null, 2)}</pre>
 {:else}
 	<p>No data loaded yet</p>
-{/if}
-
-<pre>{JSON.stringify(progress)}</pre>
-
-<Button onclick={getAllCoded} disabled={isLoading}>Get all coded data</Button>
-<Button onclick={getProgress} disabled={isLoading}>Get coding progress</Button>
-
-<style>
-	.error {
-		color: red;
-		padding: 1rem;
-		margin-bottom: 1rem;
-	}
-</style>
+{/if} -->

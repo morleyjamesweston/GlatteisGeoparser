@@ -1,5 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
+import { userData } from '$lib/stores/user.svelte';
 
 export const load: PageLoad = async ({ fetch }) => {
 	try {
@@ -9,7 +10,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		});
 
 		if (response.ok) {
-			// Redirect to login page after successful logout
+			userData.loadUserData();
 			redirect(302, '/auth/login');
 		} else {
 			console.error('Logout failed');

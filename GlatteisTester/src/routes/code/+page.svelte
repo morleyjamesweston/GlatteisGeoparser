@@ -3,11 +3,11 @@
 	import FeaturesBar from '$lib/components/features-bar.svelte';
 	import LocationMap from '$lib/components/location-map.svelte';
 	import SelectWords from '$lib/components/select-words.svelte';
-	import Button from '$lib/primitives/button.svelte';
 	import { removeHtmlContent } from '$lib/utilities/clean-text';
 	import { apiGet, apiPost } from '$lib/api';
 	import { onMount } from 'svelte';
 	import type { ReturnGeoDataFeature } from '$lib/interfaces';
+	import Button from '$lib/components/ui/button/button.svelte';
 
 	let articleID: string | null = $state(null);
 	let content: string | null = $state(null);
@@ -97,22 +97,24 @@
 	});
 </script>
 
-<div class="flex-col">
+<div class="flex flex-col gap-4 p-4">
 	{#if stage == 'recognize'}
-		<h2>Choices</h2>
+		<h2 class="font-heading text-lg font-black">Locations selected</h2>
 		<ChoiceButtons bind:selected />
-		<h2>Content</h2>
+		<h2 class="font-heading text-lg font-black">
+			Content
+			<span class="font-light">(Article: {articleID})</span>
+		</h2>
 		<SelectWords {content} bind:selected enabled={stage == 'recognize'} />
-
-		<div class="flex-between">
-			<Button variant="secondary" onclick={submitNoneFound}>No locations found</Button>
-			<Button onclick={advanceStage}>Next step</Button>
+		<div class="flex justify-end gap-2">
+			<Button variant="outline" onclick={submitNoneFound}>No locations found</Button>
+			<Button onclick={advanceStage}>All locations recorded</Button>
 		</div>
 	{:else if stage == 'resolve' && selected}
 		<FeaturesBar {selected} {resolvedFeatures} />
-		<h2>Locations</h2>
+		<h2 class="font-heading text-lg font-black">Locations</h2>
 		<LocationMap location={selected[resolveFeatureIdx]} bind:selectedGeoData={selectedFeature} />
-		<button onclick={advanceResolutionTask}>Submit</button>
+		<Button onclick={advanceResolutionTask}>Submit</Button>
 	{/if}
 </div>
 

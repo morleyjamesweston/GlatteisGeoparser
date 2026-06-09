@@ -22,3 +22,4 @@ tests/test_data/
 # /src/glatteisgeoparser/testing_framework/tester/static
 test_apis/test_data/
 src/instance/
+src/instance/db.sqlite

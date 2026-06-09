@@ -1,4 +1,6 @@
 <script lang="ts">
+	import ScrollArea from './ui/scroll-area/scroll-area.svelte';
+
 	let {
 		content,
 		selected = $bindable([]),
@@ -137,11 +139,11 @@
 	}
 </script>
 
-<div class="select-container">
+<ScrollArea class="h-full max-h-200 rounded border px-6 py-4">
 	{#each splitWords as word, idx (`${idx}-${word}`)}
 		{@render selectableWord(word, idx)}
 	{/each}
-</div>
+</ScrollArea>
 
 {#snippet selectableWord(word: string, idx: number)}
 	<button
@@ -166,7 +168,7 @@
 			selectStart = null;
 			selectEnd = null;
 		}}
-		class="word
+		class="selectable-word
 		{hoveredRange && hoveredRange[0] <= idx && hoveredRange[1] >= idx ? 'hovered' : ''}
 
 		{isInSelectedRanges(idx, idx) ? 'selected' : ''}"
@@ -176,31 +178,21 @@
 {/snippet}
 
 <style lang="scss">
-	.word {
+	.selectable-word {
 		border: none;
 		background: none;
 		font-size: 1.2rem;
 		transition: background 0.2s ease;
 		cursor: pointer;
 		user-select: none;
-		padding: 0.5rem 0.2rem;
+		padding: 0.3rem 0.2rem;
 	}
 
-	.word.hovered {
+	.selectable-word.hovered {
 		background: $selection-hovered;
 	}
 
 	.selected {
 		background: $selection;
-	}
-
-	.select-container {
-		display: flex;
-		flex-wrap: wrap;
-		font-family: $font-serif;
-		padding: $spacing-md;
-		border: 1px solid $border;
-		background: $background;
-		border-radius: $spacing-sm;
 	}
 </style>

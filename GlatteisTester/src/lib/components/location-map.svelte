@@ -257,15 +257,14 @@
 	});
 </script>
 
-<div id="mainMap" use:setupMap></div>
-<h2>Identify the correct feature:</h2>
-<!-- <pre>{JSON.stringify(features, null, 2)}</pre> -->
+<div id="mainMap" class="h-full min-h-200 w-full" use:setupMap></div>
+<h2 class="font-heading text-lg font-black">Identify the correct feature:</h2>
 <FeatureChoices {features} bind:hovered={hoveredFeature} bind:value={selectedFeature} />
 
 <style lang="scss">
-	#mainMap {
+	/* #mainMap {
 		width: 100%;
 		height: 40rem;
 		border: 1px solid #aaa;
-	}
+	} */
 </style>

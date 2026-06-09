@@ -1,9 +1,13 @@
 <script lang="ts">
-	import { Field, Control, Label, FieldErrors, Description } from 'formsnap';
+	import { Field, Control, FieldErrors, Description } from 'formsnap';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { loginSchema } from './schema';
 	import { valibotClient, valibot } from 'sveltekit-superforms/adapters';
 	import { buildApiUrl } from '$lib/api';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { Button } from '$lib/components/ui/button';
+	import Input from '$lib/components/ui/input/input.svelte';
+	import Label from '$lib/components/ui/label/label.svelte';
 
 	let errorMessage = $state('');
 	let isLoading = $state(false);
@@ -53,32 +57,40 @@
 	const { form, enhance } = superform;
 </script>
 
-<form method="POST" use:enhance>
-	{#if errorMessage}
-		<div class="error-message">{errorMessage}</div>
-	{/if}
+<div class="flex h-full w-full items-center justify-center">
+	<Card.Root class="w-100">
+		<Card.Header>
+			<Card.Title>Log in</Card.Title>
+			<Card.Description>Log in to your account to start geocoding.</Card.Description>
+			<Card.Action><Button variant="secondary" href="/auth/register">Register</Button></Card.Action>
+		</Card.Header>
+		<Card.Content>
+			<form method="POST" use:enhance class="flex flex-col gap-2">
+				{#if errorMessage}
+					<div class="error-message">{errorMessage}</div>
+				{/if}
 
-	<Field form={superform} name="username">
-		<Control>
-			{#snippet children({ props })}
-				<Label>Username</Label>
-				<input {...props} bind:value={$form.username} />
-			{/snippet}
-		</Control>
-		<Description>Enter your email address.</Description>
-		<FieldErrors />
-	</Field>
-	<Field form={superform} name="password">
-		<Control>
-			{#snippet children({ props })}
-				<Label>Password</Label>
-				<input {...props} type="password" bind:value={$form.password} />
-			{/snippet}
-		</Control>
-		<Description>Ensure the password is at least 6 characters.</Description>
-		<FieldErrors />
-	</Field>
-	<button type="submit" disabled={isLoading}> {isLoading ? 'Logging in...' : 'Login'}</button>
-</form>
-
-sdfdsfdsafd
+				<Field form={superform} name="username">
+					<Control>
+						{#snippet children({ props })}
+							<Label>Username</Label>
+							<Input {...props} bind:value={$form.username} />
+						{/snippet}
+					</Control>
+					<Description>Enter your email address.</Description>
+					<FieldErrors />
+				</Field>
+				<Field form={superform} name="password">
+					<Control>
+						{#snippet children({ props })}
+							<Label>Password</Label>
+							<Input {...props} type="password" bind:value={$form.password} />
+						{/snippet}
+					</Control>
+					<FieldErrors />
+				</Field>
+				<Button type="submit" disabled={isLoading}>{isLoading ? 'Logging in...' : 'Login'}</Button>
+			</form>
+		</Card.Content>
+	</Card.Root>
+</div>
