@@ -9,7 +9,7 @@
 	}: { unresolvedLocsPerGeoparser: UnresolvedLocsPerGeoparser | null } = $props();
 </script>
 
-<Card.Root>
+<Card.Root class="grow">
 	<Card.Header>
 		<Card.Title>Most common unresolved locations</Card.Title>
 		<Card.Description>Each geoparser has some places that are unresolved.</Card.Description>

@@ -41,7 +41,7 @@
 {#snippet codedLoc(loc: CodedLoc)}
 	<HoverCard.Root>
 		<HoverCard.Trigger>
-			<div class="rounded-lg bg-muted p-2">
+			<div class="rounded-lg bg-muted px-2 py-1">
 				{loc.location_name}
 			</div>
 		</HoverCard.Trigger>
@@ -54,22 +54,22 @@
 	</HoverCard.Root>
 {/snippet}
 
-<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+<div class="grid grow grid-cols-1 gap-4 md:grid-cols-2">
 	<Card.Root class="grow">
 		<Card.Header>
-			<Card.Title class="font-heading text-2xl">Resolved Locations</Card.Title>
+			<Card.Title>Resolved Locations</Card.Title>
 			<Card.Description>These are the locations resolved by each geoparser.</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			{#each Object.entries(foundLocsByGeoparser) as [geoparser, locs] (geoparser)}
 				<div>
-					<Separator class="my-4" />
-					<h3 class="mb-4 font-heading text-lg text-muted-foreground">Geoparser: {geoparser}</h3>
+					<h3 class="mb-1 font-heading text-muted-foreground">Geoparser: {geoparser}</h3>
 					<div class="flex flex-wrap gap-1">
 						{#each locs as loc (loc.id)}
 							{@render codedLoc(loc)}
 						{/each}
 					</div>
+					<Separator class="mt-2" />
 				</div>
 			{:else}
 				<div class="flex h-full min-h-12 items-center justify-center text-muted-foreground">
@@ -81,21 +81,19 @@
 
 	<Card.Root>
 		<Card.Header>
-			<Card.Title class="font-heading text-2xl">Unresolved Locations</Card.Title>
-			<Card.Description>
-				These are the locations that could not be resolved by any geoparser.
-			</Card.Description>
+			<Card.Title>Unresolved Locations</Card.Title>
+			<Card.Description>These are the locations that could not be resolved.</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			{#each Object.entries(nullLocsByGeoparser) as [geoparser, locs] (geoparser)}
 				<div>
-					<Separator class="my-4" />
-					<h3 class="mb-4 font-heading text-lg text-muted-foreground">Geoparser: {geoparser}</h3>
+					<h3 class="mb-1 font-heading text-muted-foreground">Geoparser: {geoparser}</h3>
 					<div class="flex flex-wrap gap-1">
 						{#each locs as loc (loc.id)}
 							{@render codedLoc(loc)}
 						{/each}
 					</div>
+					<Separator class="mt-2" />
 				</div>
 			{:else}
 				<div class="flex h-full min-h-12 items-center justify-center text-muted-foreground">

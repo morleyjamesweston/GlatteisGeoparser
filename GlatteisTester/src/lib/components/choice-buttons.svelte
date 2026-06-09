@@ -13,7 +13,7 @@
 	);
 </script>
 
-<div class="h-24 w-full">
+<div class="h-16 w-full">
 	{#each uniqueSelected as item, idx (`${item}-${idx}`)}
 		<Button
 			size="lg"
@@ -24,6 +24,6 @@
 			{stripPunctuation(item)}
 		</Button>
 	{:else}
-		<Skeleton height={6} text="Please identify all locations in the text." />
+		<Skeleton height={4} text="Please identify all locations in the text." />
 	{/each}
 </div>

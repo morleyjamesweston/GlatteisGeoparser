@@ -6,7 +6,7 @@
 	import LogInIcon from '@lucide/svelte/icons/log-in';
 </script>
 
-<header class="flex items-center justify-between px-4 py-2">
+<header class="flex w-full items-center justify-between px-4 py-2">
 	<div class="font-heading text-2xl">Glatteis Geotester</div>
 
 	<div class="flex items-center gap-1">

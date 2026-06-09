@@ -99,7 +99,7 @@
 	});
 </script>
 
-<div class="flex flex-col gap-4 p-4">
+<div class="flex w-full max-w-200 flex-col gap-4 p-4">
 	{#if stage == 'recognize'}
 		<Card.Root>
 			<Card.Header>

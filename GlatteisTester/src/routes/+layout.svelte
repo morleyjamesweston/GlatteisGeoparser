@@ -18,7 +18,7 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-<div class="flex min-h-screen w-full flex-col">
+<div class="flex min-h-screen w-full flex-col items-center">
 	<ModeWatcher />
 	<MenuBar />
 	{@render children()}

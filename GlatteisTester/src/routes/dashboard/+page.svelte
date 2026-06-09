@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { apiGet } from '$lib/api';
+	import { onMount } from 'svelte';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import type {
+		CodedLoc,
+		UnresolvedLocsPerGeoparser,
+		GeoParserEvaluation,
+		ResolutionRatio
+	} from '$lib/interfaces';
+
 	import CoderProgress from './coder-progress.svelte';
 	import ArticleSelector from './article-selector.svelte';
 	import ArticleText from './article-text.svelte';
-	import * as Card from '$lib/components/ui/card/index.js';
-	import type { CodedLoc, UnresolvedLocsPerGeoparser } from '$lib/interfaces';
+	import ArticleMap from './article-map.svelte';
 	import CodingDisplay from './coding-display.svelte';
-	import { onMount } from 'svelte';
-	import type { GeoParserEvaluation, ResolutionRatio } from '$lib/interfaces';
 	import ResolvedChart from './resolved-chart.svelte';
 	import UnresolvedCounts from './unresolved-counts.svelte';
 
@@ -48,7 +54,7 @@
 	});
 </script>
 
-<div class="grid grid-cols-1 gap-4 p-4 xl:grid-cols-4">
+<div class="grid w-full grow grid-cols-1 gap-4 p-4 xl:grid-cols-4">
 	<div class="flex flex-col gap-4">
 		<CoderProgress />
 		<ResolvedChart {resolutionRatios} />
@@ -77,6 +83,12 @@
 			<Card.Footer></Card.Footer>
 		</Card.Root>
 
+		<h1 class="font-lg font-heading">Machine coded</h1>
 		<CodingDisplay codedLocs={allCoded?.machine_coding} />
+		<h1 class="font-lg font-heading">Human coded</h1>
+		<CodingDisplay codedLocs={allCoded?.manual_coding} />
+	</div>
+	<div class="flex flex-col gap-4">
+		<ArticleMap {selectedContentID} />
 	</div>
 </div>

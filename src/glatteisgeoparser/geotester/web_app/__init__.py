@@ -60,7 +60,7 @@ def initialize_web_app(
     register_auth_routes(app, static_folder)
     register_code_routes(app, testing_data, geoparsers)
     register_static_routes(app, static_folder)
-    register_dashboard_routes(app, testing_data=testing_data)
+    register_dashboard_routes(app, testing_data=testing_data, geoparsers=geoparsers)
 
     # Enable CORS for all routes with proper credential support
     # Note: When using credentials, we can't use wildcard origins
