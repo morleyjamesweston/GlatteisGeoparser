@@ -1,15 +1,14 @@
 <script lang="ts">
 	import { apiGet } from '$lib/api';
-	import { onMount } from 'svelte';
 	import CoderProgress from './coder-progress.svelte';
 	import ArticleSelector from './article-selector.svelte';
 	import ArticleText from './article-text.svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import type { CodedLoc } from '$lib/interfaces';
+	import CodingDisplay from './coding-display.svelte';
 
-	let allCoded = $state(null);
+	let allCoded: { machine_coding: CodedLoc[]; manual_coding: CodedLoc[] } | null = $state(null);
 	let selectedContentID = $state('');
-
-	//     @app.route("/api/dashboard/coded/<content_id>", methods=["GET"])
 
 	async function getCodedData(content_id: string) {
 		try {
@@ -34,7 +33,9 @@
 	<Card.Root>
 		<Card.Header>
 			{#if selectedContentID}
-				<Card.Title>Content {selectedContentID}</Card.Title>
+				<Card.Title
+					>Content <span class="text-muted-foreground">(ID: {selectedContentID})</span></Card.Title
+				>
 			{:else}
 				<Card.Title>Select an article by ID number:</Card.Title>
 			{/if}
@@ -48,15 +49,6 @@
 		</Card.Content>
 		<Card.Footer></Card.Footer>
 	</Card.Root>
-</div>
 
-<!-- {#if error}
-	<div class="error">Error: {error}</div>
-{/if}
-{#if isLoading}
-	<div>Loading...</div>
-{:else if allCoded}
-	<pre>{JSON.stringify(allCoded, null, 2)}</pre>
-{:else}
-	<p>No data loaded yet</p>
-{/if} -->
+	<CodingDisplay codedLocs={allCoded?.machine_coding} />
+</div>

@@ -13,3 +13,11 @@ export interface CodingProgress {
 	}>;
 	total_test_data: number;
 }
+
+export interface CodedLoc {
+	content_id: string;
+	geoparser_label: string;
+	id: number;
+	location_id: number | null;
+	location_name: string;
+}

@@ -127,5 +127,6 @@
 	}
 	html {
 		@apply font-sans;
+		font-size: 125%; /* Increases by 12.5% (16px → 18px) */
 	}
 }

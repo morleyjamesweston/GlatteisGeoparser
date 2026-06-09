@@ -54,7 +54,3 @@
 		</ScrollArea>
 	</Card.Content>
 </Card.Root>
-
-<div>
-	<h2 class="mb-2 font-heading text-lg font-semibold"></h2>
-</div>

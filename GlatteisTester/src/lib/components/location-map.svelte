@@ -6,7 +6,6 @@
 	import TileLayer from 'ol/layer/Tile.js';
 	import { geoDataStore } from '$lib/stores/geodata.svelte';
 
-	import './map-style.css';
 	import GeoJSON from 'ol/format/GeoJSON.js';
 	import VectorSource from 'ol/source/Vector.js';
 	import { Fill, Stroke, Style } from 'ol/style.js';
@@ -16,6 +15,7 @@
 	import { stripPunctuation } from '$lib/utilities/strip-punctuation';
 	import FeatureChoices from './feature-choices.svelte';
 	import type { ReturnGeoDataFeature } from '$lib/interfaces';
+	import Separator from './ui/separator/separator.svelte';
 
 	let {
 		location,
@@ -139,7 +139,6 @@
 					}
 				}
 
-				// Try parsing again if still a string (double-encoded)
 				if (typeof data === 'string') {
 					try {
 						data = JSON.parse(data);
@@ -150,11 +149,6 @@
 				}
 
 				console.log('Parsed location choices data:', data);
-
-				// 				Parsed location choices data:
-				// Object { message: "No candidates found for 'Freiberg'" }
-				//
-				// if this is found, automatically make "none_found" the selected choice and skip the map interaction step
 
 				if (data && typeof data === 'object' && 'message' in data) {
 					if (typeof data.message === 'string' && data.message.includes('No candidates found')) {
@@ -257,8 +251,9 @@
 	});
 </script>
 
-<div id="mainMap" class="h-full min-h-200 w-full" use:setupMap></div>
-<h2 class="font-heading text-lg font-black">Identify the correct feature:</h2>
+<div id="mainMap" class="h-120 w-full" use:setupMap></div>
+<h2 class="mt-4 font-heading">Identify the correct feature:</h2>
+<Separator />
 <FeatureChoices {features} bind:hovered={hoveredFeature} bind:value={selectedFeature} />
 
 <style lang="scss">

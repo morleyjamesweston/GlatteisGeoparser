@@ -15,10 +15,9 @@
 	import CheckCircleIcon from '@lucide/svelte/icons/circle-check-big';
 	import CircleIcon from '@lucide/svelte/icons/circle';
 	import { RadioGroup } from 'bits-ui';
-	import Separator from './ui/separator/separator.svelte';
 </script>
 
-<RadioGroup.Root class="flex flex-col gap-1 border p-4" bind:value>
+<RadioGroup.Root class="flex flex-col gap-1" bind:value>
 	{#each features as feature (feature.id)}
 		<RadioGroup.Item
 			id={feature.id}
@@ -38,7 +37,6 @@
 			{/snippet}
 		</RadioGroup.Item>
 	{/each}
-	<Separator />
 	<RadioGroup.Item
 		id="other"
 		value="other"
