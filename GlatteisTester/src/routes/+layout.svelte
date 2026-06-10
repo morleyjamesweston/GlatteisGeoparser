@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import MenuBar from '$lib/components/menu-bar.svelte';
 	import { ModeWatcher } from 'mode-watcher';
+	import { Toaster } from '$lib/components/ui/sonner/index.js';
 
 	onMount(() => {
 		userData.loadUserData();
@@ -17,6 +18,8 @@
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
+
+<Toaster position="top-center" />
 
 <div class="flex min-h-screen w-full flex-col items-center">
 	<ModeWatcher />

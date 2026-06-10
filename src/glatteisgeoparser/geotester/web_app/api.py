@@ -1,6 +1,7 @@
 """API endpoints for the geotester web app."""
 
 import json
+from dataclasses import dataclass
 from typing import List
 
 import pandas as pd
@@ -80,23 +81,38 @@ def register_code_routes(
 
         if current_user.is_authenticated:
             session = get_db_session(app)
-            for resolution in data.get("resolutions", {}).values():
-                if resolution is None:
-                    pass
-                else:
-                    coding_entry = ManualCoding(
-                        user_id=current_user.id,
-                        content_id=data.get("id", None),
-                        location_name=resolution.get("original_names", ""),
-                        location_id=resolution.get("original_index", ""),
-                        gazetteer=resolution.get("gazetteer_name", ""),
-                    )
-                    session.add(coding_entry)
-            session.commit()
+            results = data.get("resolutions", {})
+            if results == "none_found":
+                coding_entry = ManualCoding(
+                    user_id=current_user.id,
+                    content_id=data.get("id", None),
+                    location_name="no_locations_found",
+                    location_id=None,
+                    gazetteer=None,
+                )
+                session.add(coding_entry)
+                session.commit()
+                return jsonify(
+                    {"message": "Submission received successfully", "success": True}
+                )
+            else:
+                for resolution in data.get("resolutions", {}).values():
+                    if resolution is None:
+                        pass
+                    else:
+                        coding_entry = ManualCoding(
+                            user_id=current_user.id,
+                            content_id=data.get("id", None),
+                            location_name=resolution.get("original_names", ""),
+                            location_id=resolution.get("original_index", ""),
+                            gazetteer=resolution.get("gazetteer_name", ""),
+                        )
+                        session.add(coding_entry)
+                session.commit()
 
-            return jsonify(
-                {"message": "Submission received successfully", "success": True}
-            )
+                return jsonify(
+                    {"message": "Submission received successfully", "success": True}
+                )
         else:
             print("User not authenticated")
             return jsonify({"message": "User not authenticated", "success": False}), 401
@@ -235,6 +251,48 @@ def register_dashboard_routes(
             }
         ), 200
 
+    @app.route("/api/dashboard/geoparser_accuracies", methods=["GET"])
+    def get_all_geoparser_accuracies():
+        session = get_db_session(app)
+        geoparsers = session.query(Geoparsers).all()
+        geoparsers = [g.label for g in geoparsers]
+        print(geoparsers)
+
+        manual_coding_df = pd.read_sql(session.query(ManualCoding).statement, db.engine)
+
+        all_geoparser_accuracies = {}
+        for geoparser_id in geoparsers:
+            machine_coding_df = pd.read_sql(
+                session.query(MachineCoding)
+                .filter(MachineCoding.geoparser_label == geoparser_id)
+                .statement,
+                db.engine,
+            )
+            accuracy = calculate_geoparser_accuracy(machine_coding_df, manual_coding_df)
+            all_geoparser_accuracies[geoparser_id] = accuracy
+
+        return jsonify(all_geoparser_accuracies), 200
+
+    @app.route("/api/dashboard/geoparser_accuracy/<geoparser_id>", methods=["GET"])
+    def get_geoparser_accuracy(geoparser_id):
+        session = get_db_session(app)
+
+        if not geoparser_id:
+            return jsonify(
+                {"message": "geoparser_id is required", "success": False}
+            ), 400
+
+        machine_coding_df = pd.read_sql(
+            session.query(MachineCoding)
+            .filter(MachineCoding.geoparser_label == geoparser_id)
+            .statement,
+            db.engine,
+        )
+        manual_coding_df = pd.read_sql(session.query(ManualCoding).statement, db.engine)
+
+        accuracy = calculate_geoparser_accuracy(machine_coding_df, manual_coding_df)
+        return jsonify(accuracy), 200
+
     @app.route("/api/dashboard/loc_geodata", methods=["GET"])
     def get_geodata_for_locations():
         content_id = request.args.get("content_id")
@@ -266,6 +324,84 @@ def register_dashboard_routes(
             for gp in geoparser_configs
         ]
         return jsonify(geoparser_configs), 200
+
+
+@dataclass
+class AccuracyResult:
+    precision: float
+    recall: float
+    f1_score: float
+
+
+def calculate_geoparser_accuracy(
+    machine_coding_df: pd.DataFrame, manual_coding_df: pd.DataFrame
+) -> AccuracyResult:
+    """Calculate precision, recall, and F1 for a geoparser against human annotations.
+
+    Matching is set-based per content_id: a machine-coded location_name is a true
+    positive when it also appears in the human-coded set for the same content_id.
+    Duplicate location_names within the same content_id are counted only once (set
+    semantics).  The sentinel value ``"no_locations_found"`` is excluded from all
+    counts.
+
+    Args:
+        machine_coding_df: Rows produced by the geoparser under evaluation.
+            Expected columns: ``location_name``, ``content_id``.
+        manual_coding_df: Rows produced by human annotators.
+            Expected columns: ``location_name``, ``content_id``.
+
+    Returns:
+        An :class:`AccuracyResult` with precision, recall, and F1 in [0, 1].
+    """
+    NO_LOC = "no_locations_found"
+
+    # Drop the sentinel and deduplicate (same name, different gazetteer rows)
+    machine = machine_coding_df[
+        machine_coding_df["location_name"] != NO_LOC
+    ].drop_duplicates(subset=["content_id", "location_name"])[
+        ["content_id", "location_name"]
+    ]
+    manual = manual_coding_df[
+        manual_coding_df["location_name"] != NO_LOC
+    ].drop_duplicates(subset=["content_id", "location_name"])[
+        ["content_id", "location_name"]
+    ]
+
+    # Build per-content_id sets for fast lookup
+    machine_sets: dict[str, set[str]] = (
+        machine.groupby("content_id")["location_name"].apply(set).to_dict()
+    )
+    manual_sets: dict[str, set[str]] = (
+        manual.groupby("content_id")["location_name"].apply(set).to_dict()
+    )
+
+    all_content_ids = set(machine_sets) | set(manual_sets)
+
+    total_tp = 0
+    total_fp = 0
+    total_fn = 0
+
+    for content_id in all_content_ids:
+        machine_locs = machine_sets.get(content_id, set())
+        manual_locs = manual_sets.get(content_id, set())
+
+        tp = len(machine_locs & manual_locs)
+        fp = len(machine_locs - manual_locs)
+        fn = len(manual_locs - machine_locs)
+
+        total_tp += tp
+        total_fp += fp
+        total_fn += fn
+
+    precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0.0
+    recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0.0
+    f1 = (
+        2 * precision * recall / (precision + recall)
+        if (precision + recall) > 0
+        else 0.0
+    )
+
+    return AccuracyResult(precision=precision, recall=recall, f1_score=f1)
 
 
 def get_most_common_unresolved_locs_per_geoparser(df: pd.DataFrame):

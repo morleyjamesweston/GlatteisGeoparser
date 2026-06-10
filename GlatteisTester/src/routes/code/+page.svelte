@@ -31,7 +31,10 @@
 	});
 
 	function advanceStage() {
-		if (stage === 'recognize') {
+		if (stage === 'recognize' && selected.length === 0) {
+			stage = 'recognize';
+			fetch_content();
+		} else if (stage === 'recognize') {
 			stage = 'resolve';
 		} else if (stage === 'resolve') {
 			stage = 'recognize';
@@ -105,6 +108,9 @@
 
 <div class="grid w-full grid-cols-4">
 	<div class="flex flex-col gap-4 pt-4 pl-4">
+		<h2 class="font-heading text-2xl font-bold">
+			Content ID: <span class="font-light">{articleID}</span>
+		</h2>
 		<CoderProgress />
 		{#if stage == 'resolve' && selected}
 			<TextSnip location={stripPunctuation(selected[resolveFeatureIdx])} text={content} />
@@ -115,7 +121,7 @@
 			<Card.Root>
 				<Card.Header>
 					<Card.Title>Locations selected</Card.Title>
-					<Card.Description>Card Description</Card.Description>
+					<!-- <Card.Description>Card Description</Card.Description> -->
 				</Card.Header>
 				<Card.Content>
 					<ChoiceButtons bind:selected />
@@ -133,8 +139,12 @@
 					<SelectWords {content} bind:selected enabled={stage == 'recognize'} />
 				</Card.Content>
 				<Card.Footer class="flex justify-end gap-2">
-					<Button variant="outline" onclick={submitNoneFound}>No locations found</Button>
-					<Button onclick={advanceStage}>All locations recorded</Button>
+					<Button disabled={selected.length > 0} variant="outline" onclick={submitNoneFound}
+						>No locations found</Button
+					>
+					<Button disabled={selected.length === 0} onclick={advanceStage}
+						>All locations recorded</Button
+					>
 				</Card.Footer>
 			</Card.Root>
 		{:else if stage == 'resolve' && selected}
