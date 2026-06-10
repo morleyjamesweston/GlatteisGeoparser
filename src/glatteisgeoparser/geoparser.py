@@ -116,7 +116,9 @@ class GlatteisGeoparser:
         """
         self.geodata.add_gazetteer(gdf, configs)
 
-    def parse(self, text: str) -> gpd.GeoDataFrame | None:
+    def parse(
+        self, text: str, output: str = "geodata"
+    ) -> gpd.GeoDataFrame | dict | None:
 
         if not self.geodata.original_gazetteers:
             raise Exception("No gazetteers loaded")
@@ -127,7 +129,13 @@ class GlatteisGeoparser:
             return None
         else:
             candidates = self.resolver(text, candidates)
-            return candidates
+            if output == "geodata":
+                return candidates
+            elif output == "dict":
+                # strip geometry column
+                return candidates.drop(columns=["geometry"]).to_dict()
+            else:
+                raise ValueError(f"Invalid output format: {output}")
 
 
 __all__ = ["GlatteisGeoparser"]

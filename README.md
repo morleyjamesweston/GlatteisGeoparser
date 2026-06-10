@@ -5,6 +5,8 @@
 
 ## Step 1: Build a geoparser, or several
 
+This is meant to be split into moduls
+
 ```{python}
 from glatteisgeoparser import RecognizerConfigs, ResolverConfigs
 

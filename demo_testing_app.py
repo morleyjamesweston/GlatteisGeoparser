@@ -1,3 +1,4 @@
+# %%
 import geopandas as gpd
 import pandas as pd
 
@@ -6,12 +7,13 @@ from glatteisgeoparser import (
     GlatteisGeoparser,
     GlatteisGeoTester,
     RecognizerConfigs,
+    GeoTesterConfigs,
 )
-from glatteisgeoparser.configs import GeoTesterConfigs
 
-testing_data = pd.read_csv("./test_data/glatteis_sample.csv")
+# %%
+from pprint import pprint
 
-
+# %%
 recognizer_configs = RecognizerConfigs(
     language="de",
     method="spacy",
@@ -31,7 +33,13 @@ gigp_stanza = GlatteisGeoparser(
     language="de", label="stanza_test", recogizer_configs=recognizer_configs
 )
 
-ne_countries = gpd.read_file("./test_data/ne_10m_admin_0_countries.zip")
+# %%
+
+ne_countries = gpd.read_file(
+    "./tests/test_data/ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp"
+)
+
+
 configs = GazetteerConfigs(
     name="natural_earth_countries",
     index_col="ADM0_A3",
@@ -41,10 +49,13 @@ configs = GazetteerConfigs(
     is_contextual=True,
 )
 
+
+# %%
+
 gigp_spacy.add_gazetteer(gdf=ne_countries, configs=configs)
 gigp_stanza.add_gazetteer(gdf=ne_countries, configs=configs)
 
-cantons = gpd.read_file("./test_data/swiss_govt_data/cantons.geojson")
+cantons = gpd.read_file("./tests/test_data/swiss_govt_data/cantons.geojson")
 cantons = cantons.to_crs("EPSG:4326")
 configs = GazetteerConfigs(
     name="swissCantons",
@@ -57,7 +68,9 @@ configs = GazetteerConfigs(
 gigp_spacy.add_gazetteer(gdf=cantons, configs=configs)
 gigp_stanza.add_gazetteer(gdf=cantons, configs=configs)
 
-munis = gpd.read_file("./test_data/swiss_govt_data/municipalities.geojson")
+
+# %%
+munis = gpd.read_file("./tests/test_data/swiss_govt_data/municipalities.geojson")
 munis = munis.to_crs("EPSG:4326")
 configs = GazetteerConfigs(
     name="swissMunicipalities",
@@ -70,7 +83,9 @@ configs = GazetteerConfigs(
 gigp_spacy.add_gazetteer(gdf=munis, configs=configs)
 gigp_stanza.add_gazetteer(gdf=munis, configs=configs)
 
-populated_places = gpd.read_file("./test_data/ne_110m_populated_places.zip")
+
+# %%
+populated_places = gpd.read_file("./tests/test_data/ne_110m_populated_places.zip")
 configs = GazetteerConfigs(
     name="naturalEarthPopulatedPlaces",
     index_col="WOF_ID",
@@ -82,11 +97,14 @@ configs = GazetteerConfigs(
 gigp_spacy.add_gazetteer(gdf=populated_places, configs=configs)
 gigp_stanza.add_gazetteer(gdf=populated_places, configs=configs)
 
+
 configs = GeoTesterConfigs(
     data_path="./",
 )
+tester = GlatteisGeoTester(configs=configs, geoparsers=[gigp_spacy, gigp_stanza])
+testing_data = pd.read_csv("./tests/test_data/glatteis_sample.csv")
 
-gt = GlatteisGeoTester(configs=configs, geoparsers=[gigp_spacy])
-
-app = gt.initialize_web_app(testing_data=testing_data)
+# %%
+# Will not run in notebook
+app = tester.initialize_web_app(testing_data=testing_data)
 app.run(debug=True)

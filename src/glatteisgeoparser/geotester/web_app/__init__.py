@@ -4,7 +4,7 @@ import os
 from typing import List
 
 import pandas as pd
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_cors import CORS
 from flask_login import LoginManager
 
@@ -55,6 +55,11 @@ def initialize_web_app(
     @login_manager.user_loader
     def load_user(user_id):
         return Users.query.get(int(user_id))
+
+    # redirect / to /code
+    @app.route("/")
+    def redirect_to_code():
+        return redirect("/code")
 
     # Register route blueprints
     register_auth_routes(app, static_folder)

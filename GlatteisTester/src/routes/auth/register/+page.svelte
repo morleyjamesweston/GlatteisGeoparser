@@ -61,7 +61,7 @@
 	const { form, enhance } = superform;
 </script>
 
-<div class="flex h-full w-full items-center justify-center">
+<div class="flex h-full w-full grow items-center justify-center">
 	<Card.Root class="w-100">
 		<Card.Header>
 			<Card.Title>Register</Card.Title>
