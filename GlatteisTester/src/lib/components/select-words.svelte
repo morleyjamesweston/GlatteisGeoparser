@@ -185,7 +185,7 @@
 		transition: background 0.2s ease;
 		cursor: pointer;
 		user-select: none;
-		padding: 0.3rem 0.2rem;
+		padding: 0.1rem 0.15rem;
 	}
 
 	.selectable-word.hovered {

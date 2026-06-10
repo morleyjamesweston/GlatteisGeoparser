@@ -19,6 +19,7 @@
 	import UnresolvedCounts from './unresolved-counts.svelte';
 	import CodingDisplayHuman from './coding-display-human.svelte';
 	import GeoparserConfigs from './geoparser-configs.svelte';
+	import AccuracyScores from './accuracy-scores.svelte';
 
 	let allCoded: { machine_coding: CodedLoc[]; manual_coding: CodedLocHuman[] } | null =
 		$state(null);
@@ -62,7 +63,6 @@
 	<div class="flex flex-col gap-4">
 		<CoderProgress />
 		<ResolvedChart {resolutionRatios} />
-		<UnresolvedCounts {unresolvedLocsPerGeoparser} />
 	</div>
 
 	<div class="col-span-2 flex flex-col gap-4">
@@ -87,13 +87,16 @@
 			<Card.Footer></Card.Footer>
 		</Card.Root>
 
-		<h1 class="font-lg font-heading">Machine coded</h1>
+		<h1 class="font-lg mx-auto font-heading">Machine coded</h1>
 		<CodingDisplay codedLocs={allCoded?.machine_coding} />
-		<h1 class="font-lg font-heading">Human coded</h1>
+		<h1 class="font-lg mx-auto font-heading">Human coded</h1>
 		<CodingDisplayHuman codedLocs={allCoded?.manual_coding} />
 	</div>
 	<div class="flex flex-col gap-4">
-		<GeoparserConfigs />
+		<AccuracyScores />
+
 		<!-- <ArticleMap {selectedContentID} /> -->
+		<GeoparserConfigs />
+		<UnresolvedCounts {unresolvedLocsPerGeoparser} />
 	</div>
 </div>
