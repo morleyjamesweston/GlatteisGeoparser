@@ -1,7 +1,12 @@
 from glatteisgeoparser.geoparser import GlatteisGeoparser
 from glatteisgeoparser.geotester import GlatteisGeoTester
 
-from .configs import GazetteerConfigs, GeoTesterConfigs, RecognizerConfigs
+from .configs import (
+    GazetteerConfigs,
+    GeoTesterConfigs,
+    RecognizerConfigs,
+    ResolverConfigs,
+)
 
 __all__ = [
     "GlatteisGeoparser",
@@ -9,4 +14,5 @@ __all__ = [
     "GeoTesterConfigs",
     "RecognizerConfigs",
     "GazetteerConfigs",
+    "ResolverConfigs",
 ]

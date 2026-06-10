@@ -6,6 +6,7 @@ from glatteisgeoparser import (
     GlatteisGeoparser,
     GlatteisGeoTester,
     RecognizerConfigs,
+    ResolverConfigs,
 )
 from glatteisgeoparser.configs import GeoTesterConfigs
 
@@ -17,6 +18,7 @@ recognizer_configs = RecognizerConfigs(
     method="spacy",
     model="de_core_news_lg",
 )
+
 gigp_spacy = GlatteisGeoparser(
     language="de", label="spacy_test", recogizer_configs=recognizer_configs
 )
